@@ -6,8 +6,8 @@
 // -Project resizes with the Window
 // 
 let borderSize = 60;
-let rectHeight = 700;
-let rectWidth = 500;
+let rectHeight = 500;
+let rectWidth = 600;
 let rectX = 100;
 let rectY = 100;
 let brushSize = 10;
@@ -21,6 +21,20 @@ function setup() {
 
 function draw() {
 }
+
+function mouseWheel(event) {
+  if (event.delta > 0) {
+    if (brushSize <= 100) {
+      brushSize += 5;
+    }
+  }
+  else if (event.delta <= 1) {
+    if (brushsize > 6) {
+      brushSize -= 5;
+    }
+  }
+}
+
 
 function mousePressed() {
   if (mouseX <= rectWidth + rectX && mouseX >= rectX && mouseY <= rectHeight + rectY && mouseY >= rectY) {
@@ -55,4 +69,3 @@ function windowResized() {
   stuff();
 }
 
-rect()
