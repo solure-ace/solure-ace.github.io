@@ -6,6 +6,11 @@
 // -Project resizes with the Window
 // 
 let borderSize = 60;
+let rectHeight = 700;
+let rectWidth = 500;
+let rectX = 100;
+let rectY = 100;
+let brushSize = 10;
 
 
 function setup() {
@@ -18,24 +23,28 @@ function draw() {
 }
 
 function mousePressed() {
-  fill("black");
-  circle(mouseX, mouseY, 10);
+  if (mouseX <= rectWidth + rectX && mouseX >= rectX && mouseY <= rectHeight + rectY && mouseY >= rectY) {
+    fill("black");
+    circle(mouseX, mouseY, brushSize);
+  }
 }
 
 function mouseDragged() {
-  fill("black");
-  circle(mouseX, mouseY, 10);
+  if (mouseX <= rectWidth + rectX && mouseX >= rectX && mouseY <= rectHeight + rectY && mouseY >= rectY) {
+    fill("black");
+    circle(mouseX, mouseY, brushSize);
+  }
 }
 
 function smallCanvas() {
   //smaller drawable area
   noStroke();
   fill(230)
-  rect(100, 100, 500)
+  rect(rectX, rectY, rectWidth, rectHeight)
 }
 
-function stuff() {
-  background(230, 200, 260);
+function stuff() { //call this something better PLS
+  background(230, 200, 260); //light purple/pink
   smallCanvas();
 }
 
@@ -45,3 +54,5 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   stuff();
 }
+
+rect()
