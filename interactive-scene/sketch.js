@@ -4,68 +4,72 @@
 //
 // Extra for Experts:
 // -Project resizes with the Window
-// 
+// -mouse scroll wheel changes brushSize
+
+///formating
 let borderSize = 60;
+///drawable area 
 let rectHeight = 500;
 let rectWidth = 600;
 let rectX = 100;
 let rectY = 100;
+///brush
 let brushSize = 10;
+///color
+let brushR = 0;
+let brushG = 0;
+let brushB = 0;
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  stuff();
-
+  stuffToDoWhenStarts();
 }
 
 function draw() {
+  //currently empty for some reason????
 }
 
 function mouseWheel(event) {
-  if (event.delta > 0) {
-    if (brushSize <= 100) {
-      brushSize += 5;
-    }
+  if (event.delta <= 0 && brushSize <= 80 ) {
+    brushSize += 5;
   }
-  else if (event.delta <= 1) {
-    if (brushsize > 6) {
-      brushSize -= 5;
-    }
+  else if (event.delta > 1 && brushSize > 6) {
+    brushSize -= 5;
   }
 }
 
-
 function mousePressed() {
   if (mouseX <= rectWidth + rectX && mouseX >= rectX && mouseY <= rectHeight + rectY && mouseY >= rectY) {
-    fill("black");
+    fill(brushR, brushG, brushB);
     circle(mouseX, mouseY, brushSize);
   }
 }
 
 function mouseDragged() {
   if (mouseX <= rectWidth + rectX && mouseX >= rectX && mouseY <= rectHeight + rectY && mouseY >= rectY) {
-    fill("black");
+    fill(brushR, brushG, brushB);
     circle(mouseX, mouseY, brushSize);
   }
 }
 
 function smallCanvas() {
-  //smaller drawable area
+  //drawable area
   noStroke();
-  fill(230)
-  rect(rectX, rectY, rectWidth, rectHeight)
+  fill(230);
+  rect(rectX, rectY, rectWidth, rectHeight);
 }
 
-function stuff() { //call this something better PLS
+function stuffToDoWhenStarts() { 
   background(230, 200, 260); //light purple/pink
   smallCanvas();
+  brushSize = 10;
 }
 
 
 //resizes the project with the window
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  stuff();
+  stuffToDoWhenStarts();
 }
 
