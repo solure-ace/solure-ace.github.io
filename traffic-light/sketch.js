@@ -1,7 +1,6 @@
 // Traffic Light Demo
 // Avery Walker
 // Sept 24th 2024
-// test
 
 
 let currentColor = "green";

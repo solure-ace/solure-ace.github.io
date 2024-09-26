@@ -5,15 +5,14 @@
 // Extra for Experts:
 // -Project resizes with the Window
 // -mouse scroll wheel changes brushSize
-// testtt
 
 ///formating
-let borderSize = 60;
+let borderSize = 100;
 ///drawable area 
 let rectHeight = 500;
 let rectWidth = 600;
-let rectX = 100;
-let rectY = 100;
+let rectX = borderSize;
+let rectY = borderSize;
 ///brush
 let brushSize = 10;
 ///color
@@ -28,7 +27,7 @@ function setup() {
 }
 
 function draw() {
-  //currently empty for some reason????
+
 }
 
 function mouseWheel(event) {
@@ -41,16 +40,22 @@ function mouseWheel(event) {
 }
 
 function mousePressed() {
-  if (mouseX <= rectWidth + rectX && mouseX >= rectX && mouseY <= rectHeight + rectY && mouseY >= rectY) {
+  if (mouseX <= windowWidth-borderSize*2 + rectX && mouseX >= rectX && mouseY <= windowHeight-borderSize*2 + rectY && mouseY >= rectY) {
     fill(brushR, brushG, brushB);
     circle(mouseX, mouseY, brushSize);
   }
 }
 
 function mouseDragged() {
-  if (mouseX <= rectWidth + rectX && mouseX >= rectX && mouseY <= rectHeight + rectY && mouseY >= rectY) {
+  if (mouseX <= windowWidth-borderSize*2 + rectX && mouseX >= rectX && mouseY <= windowHeight-borderSize*2 + rectY && mouseY >= rectY) {
     fill(brushR, brushG, brushB);
     circle(mouseX, mouseY, brushSize);
+  }
+}
+
+function keyPressed() {
+  if (key === "r") {
+    stuffToDoWhenStarts();
   }
 }
 
@@ -58,8 +63,18 @@ function smallCanvas() {
   //drawable area
   noStroke();
   fill(230);
-  rect(rectX, rectY, rectWidth, rectHeight);
+  // if (windowWidth >= borderSize + rectWidth && windowHeight >= borderSize + rectHeight) {
+  rect(rectX, rectY, windowWidth-borderSize*2, windowHeight-borderSize*2);
+  // } 
+  // else if (windowWidth >= borderSize + rectWidth && windowHeight <= borderSize + rectHeight) {
+  //   rect(rectX, rectY, rectWidth, windowHeight-borderSize*2);
+  // }
+  // else if (windowHeight >= borderSize + rectHeight && windowWidth <= borderSize + rectWidth) {
+  //   rect(rectX, rectY, rectWidth, windowHeight-borderSize*2);
+  // }
 }
+
+function colorPallete() {}
 
 function stuffToDoWhenStarts() { 
   background(230, 200, 260); //light purple/pink
