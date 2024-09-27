@@ -13,6 +13,8 @@ let rectHeight = 500;
 let rectWidth = 600;
 let rectX = borderSize;
 let rectY = borderSize;
+//color palette
+let colorFifths = 0; // this should become a local variable
 ///brush
 let brushSize = 10;
 ///color
@@ -54,6 +56,7 @@ function mouseDragged() {
 }
 
 function keyPressed() {
+  // reset canvas when 'r' pressed
   if (key === "r") {
     stuffToDoWhenStarts();
   }
@@ -63,22 +66,26 @@ function smallCanvas() {
   //drawable area
   noStroke();
   fill(230);
-  // if (windowWidth >= borderSize + rectWidth && windowHeight >= borderSize + rectHeight) {
+
   rect(rectX, rectY, windowWidth-borderSize*2, windowHeight-borderSize*2);
-  // } 
-  // else if (windowWidth >= borderSize + rectWidth && windowHeight <= borderSize + rectHeight) {
-  //   rect(rectX, rectY, rectWidth, windowHeight-borderSize*2);
-  // }
-  // else if (windowHeight >= borderSize + rectHeight && windowWidth <= borderSize + rectWidth) {
-  //   rect(rectX, rectY, rectWidth, windowHeight-borderSize*2);
-  // }
 }
 
-function colorPallete() {}
+function colorPalette() {
+  //red, green, blue, white, + black
+  colorFifths = 0;
+  for (let i=0; i < 5; i++) {
+    fill(255, 0, 0);
+    rect(borderSize + colorFifths, windowHeight-borderSize, (windowWidth-borderSize*2)/5);
+    colorFifths += (windowWidth-borderSize*2)/5;
+  }
+}
+
+
 
 function stuffToDoWhenStarts() { 
   background(230, 200, 260); //light purple/pink
   smallCanvas();
+  colorPalette();
   brushSize = 10;
 }
 

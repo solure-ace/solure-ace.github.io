@@ -23,18 +23,21 @@ function changeColor() {
   if (currentColor === "red" && millis() > lastSwitchedTime + waitTime) {
     currentColor = "green";
     lastSwitchedTime = millis();
+    console.log(currentColor);
   }
   
   //if yellow switch to red after halfed wait time
   if (currentColor === "yellow" && millis() > lastSwitchedTime + waitTime/2 ) {
     currentColor = "red";
-    lastSwitchedTime = millis();  
+    lastSwitchedTime = millis(); 
+    console.log(currentColor); 
   }
 
   //if green switch to yellow after wait time
   if (currentColor === "green" && millis() > lastSwitchedTime + waitTime) {
     currentColor = "yellow";
     lastSwitchedTime = millis();
+    console.log(currentColor);
   }
 }
 
