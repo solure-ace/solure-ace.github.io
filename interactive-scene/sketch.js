@@ -14,7 +14,7 @@ let rectWidth = 600;
 let rectX = borderSize;
 let rectY = borderSize;
 //color palette
-let colorFifths = 0; // this should become a local variable
+let colorOrder = "red";
 ///brush
 let brushSize = 10;
 ///color
@@ -32,6 +32,21 @@ function draw() {
 
 }
 
+function changeColor() {
+  if (colorOrder === "red") {
+    colorOrder = "green";
+  }
+  else if (colorOrder === "green"){
+    colorOrder = "blue";
+  }
+  else if (colorOrder === "blue") {
+    colorOrder = "white";
+  }
+  else if (colorOrder === "white") {
+    colorOrder = "black";
+  }
+}
+
 function mouseWheel(event) {
   if (event.delta <= 0 && brushSize <= 80 ) {
     brushSize += 5;
@@ -46,6 +61,7 @@ function mousePressed() {
     fill(brushR, brushG, brushB);
     circle(mouseX, mouseY, brushSize);
   }
+  // else if ()
 }
 
 function mouseDragged() {
@@ -72,15 +88,15 @@ function smallCanvas() {
 
 function colorPalette() {
   //red, green, blue, white, + black
+  colorOrder = "red"
   colorFifths = 0;
   for (let i=0; i < 5; i++) {
-    fill(255, 0, 0);
+    fill(colorOrder);
     rect(borderSize + colorFifths, windowHeight-borderSize, (windowWidth-borderSize*2)/5);
     colorFifths += (windowWidth-borderSize*2)/5;
+    changeColor();
   }
 }
-
-
 
 function stuffToDoWhenStarts() { 
   background(230, 200, 260); //light purple/pink
