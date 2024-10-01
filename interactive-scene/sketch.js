@@ -114,8 +114,8 @@ function smallCanvas() {
 
 function colorPalette() {
   //red, green, blue, white, + black
-  colorOrder = "red"
-  colorFifths = 0;
+  colorOrder = "red";
+  let colorFifths = 0;
   for (let i=0; i < 5; i++) {
     fill(colorOrder);
     rect(borderSize + colorFifths, windowHeight-borderSize, (windowWidth-borderSize*2)/5);
