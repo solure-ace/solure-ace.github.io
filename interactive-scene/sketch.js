@@ -8,11 +8,7 @@
 
 ///formating
 let borderSize = 100;
-///drawable area 
-let rectHeight = 500;
-let rectWidth = 600;
-let rectX = borderSize;
-let rectY = borderSize;
+let paletteWidth;
 //color palette
 let colorOrder = "red";
 ///brush
@@ -21,7 +17,6 @@ let brushSize = 10;
 let brushR = 0;
 let brushG = 0;
 let brushB = 0;
-
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -57,15 +52,47 @@ function mouseWheel(event) {
 }
 
 function mousePressed() {
-  if (mouseX <= windowWidth-borderSize*2 + rectX && mouseX >= rectX && mouseY <= windowHeight-borderSize*2 + rectY && mouseY >= rectY) {
+  if (mouseX <= windowWidth-borderSize*2 + borderSize && mouseX >= borderSize && mouseY <= windowHeight-borderSize*2 + borderSize && mouseY >= borderSize) {
     fill(brushR, brushG, brushB);
     circle(mouseX, mouseY, brushSize);
   }
-  // else if ()
+}
+
+function doubleClicked(){
+  // red
+  if (mouseX >= borderSize && mouseX <= borderSize + paletteWidth && mouseY >= windowHeight-borderSize && mouseY <= windowHeight) {
+    brushR = 255;
+    brushG = 50;
+    brushB = 50;
+  }
+  //green
+  else if (mouseX >= borderSize + paletteWidth && mouseX <= borderSize + paletteWidth*2 && mouseY >= windowHeight-borderSize && mouseY <= windowHeight) {
+    brushR = 40;
+    brushG = 170;
+    brushB = 40;
+  }
+  //blue
+  else if (mouseX >= borderSize + paletteWidth*2 && mouseX <= borderSize + paletteWidth*3 && mouseY >= windowHeight-borderSize && mouseY <= windowHeight) {
+    brushR = 50;
+    brushG = 50;
+    brushB = 255;
+  }
+  //white
+  else if (mouseX >= borderSize + paletteWidth*3 && mouseX <= borderSize + paletteWidth*4 && mouseY >= windowHeight-borderSize && mouseY <= windowHeight) {
+    brushR = 255;
+    brushG = 255;
+    brushB = 255;
+  }
+  //black
+  else if (mouseX >= borderSize + paletteWidth*4 && mouseX <= borderSize + paletteWidth*5 && mouseY >= windowHeight-borderSize && mouseY <= windowHeight) {
+    brushR = 0;
+    brushG = 0;
+    brushB = 0;
+  }
 }
 
 function mouseDragged() {
-  if (mouseX <= windowWidth-borderSize*2 + rectX && mouseX >= rectX && mouseY <= windowHeight-borderSize*2 + rectY && mouseY >= rectY) {
+  if (mouseX <= windowWidth-borderSize*2 + borderSize && mouseX >= borderSize && mouseY <= windowHeight-borderSize*2 + borderSize && mouseY >= borderSize) {
     fill(brushR, brushG, brushB);
     circle(mouseX, mouseY, brushSize);
   }
@@ -82,8 +109,7 @@ function smallCanvas() {
   //drawable area
   noStroke();
   fill(230);
-
-  rect(rectX, rectY, windowWidth-borderSize*2, windowHeight-borderSize*2);
+  rect(borderSize, borderSize, windowWidth-borderSize*2, windowHeight-borderSize*2);
 }
 
 function colorPalette() {
@@ -99,16 +125,15 @@ function colorPalette() {
 }
 
 function stuffToDoWhenStarts() { 
-  background(230, 200, 260); //light purple/pink
+  background(100);
   smallCanvas();
   colorPalette();
+  paletteWidth = (windowWidth-borderSize*2)/5;
   brushSize = 10;
 }
-
 
 //resizes the project with the window
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   stuffToDoWhenStarts();
 }
-
