@@ -4,8 +4,9 @@
 - [Moving Square](moving-square)
 - [Image Demo](image-demo)
 - [Traffic Lights](traffic-light)
-- [bouncing balls](bouncing-balls)
-- [generative art](art)
+- [Bouncing Balls](bouncing-balls)
+- [Generative Art](art)
+- [Perlin Noise Ball](perlin)
 
 ## Projects
 - [Interactive Scene](interactive-scene)
