@@ -10,16 +10,18 @@ let enemyArray = [];
 let amountOfEnemies = 0;
 
 //points
-let points = 0;
+let points = 100;
 let pointsSpent = 0;
 
 //state variable for instructions
 let readInstructions = false;
 //function display points >>> (points-pointsSpent)
 
-let playerHealth = {
+let player = {
   currentHP: 100,
   maxHP: 100,
+  height: 100,
+  width: 40,
 };
 
 function setup() {
@@ -27,11 +29,18 @@ function setup() {
 }
 
 function draw() {
+  //keep
   background(0);
-  healthBarDisplay(playerHealth);
-  if (playerHealth.currentHP > 0) {
-    playerHealth.currentHP -= 1;
+  displayPoints();
+
+
+
+  //testing
+  healthBarDisplay(width/2, height/2, player);
+  if (player.currentHP > 0) {
+    player.currentHP -= 1;
   }
+  healthBarDisplay(width/2 + 100, height/2 + 100, player);
 }
 
 // function increaseEnemies() {
@@ -42,24 +51,54 @@ function draw() {
 
 function spawnEnemy() {
   for (let i = 0; i < amountOfEnemies; i++) {
-    //object notation
+    let randomHP = random(50, 150);
+
     let someEnemy = {
-      maxHP: random(50, 150), 
-      currentHP: maxHP,
+      maxHP: randomHP, 
+      currentHP: randomHP,
       atk: random(50, 100),
+      width: 30,
+      height: 30,
     };
   }
 }
 
-function healthBarDisplay(health) {
+function healthBarDisplay(x, y, guy) {
+  //grey bar
   let greyBarWidth = 110;
+  let greyX = x + guy.width/2 - greyBarWidth/2;
+  let greyY = y + guy.height + 5;
 
-  let x = width/2-greyBarWidth;
-  let y = height/2;
+  //coloured bar
+  let barX = width/2-greyBarWidth;
+  let barY = height/2;
+
   //percentage health total/current hp global variable
   noStroke();
   fill(100);
   rect(x, y, greyBarWidth, 30);
-  fill(80, 230, 120);
-  rect(x+5, y+5, health.currentHP, 20);
+
+  //green
+  if (guy.currentHP >= guy.maxHP/2){
+    fill(80, 230, 120);
+  }
+
+  //red
+  else if (guy.currentHP <= guy.maxHP/5){
+    fill(255, 120, 80);
+  }
+
+  //yellow
+  else {
+    fill(210, 210, 80);
+  }
+
+  rect(x+5, y+5, guy.currentHP, 20);
+}
+
+function displayPoints() {
+  fill(255);
+  textSize(16);
+  textStyle(BOLD);
+  text(`points:${str(points - pointsSpent)}`, 50, 50);
 }
