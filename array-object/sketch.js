@@ -15,8 +15,8 @@ let pointsSpent = 0;
 
 //state variable for instructions
 let readInstructions = false;
-//function display points >>> (points-pointsSpent)
 
+//player objects
 let player = {
   currentHP: 100,
   maxHP: 100,
@@ -24,8 +24,25 @@ let player = {
   width: 40,
 };
 
+let spriteStates = {
+  //head
+  h: "default",
+  //arms
+  rA: "default",
+  lA: "default",
+  //torso
+  t: "default",
+};
+
+
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  //interval for normal speed t+h -> default || rA -> hit
+  //interval for faster speed lA -> default || t+h -> low
+  //interval for fastest speed lA -> hit
+  //interval for slowest speed rA -> default
 }
 
 function draw() {
@@ -33,14 +50,14 @@ function draw() {
   background(0);
   displayPoints();
 
-
-
   //testing
   healthBarDisplay(width/2, height/2, player);
   if (player.currentHP > 0) {
     player.currentHP -= 1;
   }
   healthBarDisplay(width/2 + 100, height/2 + 100, player);
+
+  displayPlayer();
 }
 
 // function increaseEnemies() {
@@ -61,6 +78,54 @@ function spawnEnemy() {
       height: 30,
     };
   }
+}
+
+function changeSpriteStates() {
+  if (player.currentHP < player.maxHP/2) {
+    spriteStates.h = "low";
+  }
+  else if (player.currentHP >= player.maxHP/2) {
+    spriteStates.h = "default";
+    spriteStates.t = "default";
+    spriteStates.rA = "default";
+    spriteStates.lA = "default";
+  }
+  if (tookDamage(player)) {
+    spriteStates.h = "hit";
+    spriteStates.t = "hit";
+    spriteStates.rA = "hit";
+    spriteStates.lA = "hit";
+    for(let i = 0; i < 300; i++) {
+      spriteStates.h = "default";
+      spriteStates.t = "default";
+      spriteStates.rA = "default";
+      spriteStates.lA = "default";
+    }
+  }
+}
+
+function displayPlayer() {
+
+  spriteStates.h = "default";
+  spriteStates.t = "default";
+  if (spriteStates.h === "low" && spriteStates.t === "default") {
+    fill("yellow");
+  }
+  else { // if (spriteStates.h === "default" && spriteStates.t === "default")
+    fill("green");
+  }
+  if (spriteStates.h === "hit") {
+    fill("red");
+  }
+  //placeholder t
+  rect(90, 260, 100, 250);
+  //placeholder h
+  rect(90, 150, 100, 100);
+
+}
+
+function tookDamage(guy) {
+
 }
 
 function healthBarDisplay(x, y, guy) {
