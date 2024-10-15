@@ -7,7 +7,12 @@
 
 //enemies
 let enemyArray = [];
-let amountOfEnemies = 1;
+let amountOfEnemies = 3;
+
+//enemy spawn area
+
+let enemySpawnWidth = 800;
+let enemySpawnX = 600;
 
 //points
 let points = 100;
@@ -56,23 +61,17 @@ let player = {
   },
 };
 
-// let spriteStates = {
-//   //head
-//   h: "default",
-//   //arms
-//   rA: "default",
-//   lA: "default",
-//   //torso
-//   t: "default",
-// };
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  //player variables
   player.x = width/7;
   player.spriteStates.hX = width/7;
   player.spriteStates.tX = width/7;
   player.spriteStates.lX = width/7;
-
+  //enemy control
+  for (let i = 0; i < amountOfEnemies; i++) {
+    spawnEnemy();
+  }
 
   //interval for normal speed t+h -> default || rA -> hit
   //interval for faster speed lA -> default || t+h -> low
@@ -81,7 +80,7 @@ function setup() {
 }
 
 function animatePlayer(speed) {
-  speed = "normal"
+  speed = "normal";
   if (speed === "normal") {
 
   }
@@ -92,41 +91,60 @@ function draw() {
   background(0);
   displayPoints();
 
-  ///////testing 
 
-  healthBarDisplay(player.x, player.y, player);
+  ///////testing 
+  healthBarDisplay(player);
   // if (player.currentHP > 0) {
   //   player.currentHP -= 1;
   // }
 
   fill(20);
-  rect(width/2-200, 100, width/2, height-200);
 
+  //spawn area for enemies
+  rect(enemySpawnX, 100, enemySpawnWidth, height-200);
+
+  displayEnemy();
   displayPlayer();
 }
 
 // function increaseEnemies() {
 //   // only increase from zero if (readIntructions === true)
 //   // increase amount of enemies based on players (total) points
-
 // }
 
-function spawnEnemy(enemyX, enemyY) {
-  for (let i = 0; i < amountOfEnemies; i++) {
-    let randomHP = random(50, 150);
+function spawnEnemy() {
+  let randomHP = random(50, 150);
+  let someEnemy = {
+    maxHP: randomHP, 
+    currentHP: randomHP,
+    atk: random(50, 100),
+    width: 80,
+    height: 80,
+    x: random(enemySpawnX + 80, enemySpawnX + enemySpawnWidth-80),
+    y: random(120, height-220),
+  };
+  enemyArray.push(someEnemy);
 
-    let someEnemy = {
-      maxHP: randomHP, 
-      currentHP: randomHP,
-      atk: random(50, 100),
-      width: 30,
-      height: 30,
-      x: enemyX,
-      y: enemyY,
-    };
-    enemyArray.push(someEnemy);
+}
+
+function displayEnemy() {
+  for (let enemy of enemyArray) {
+    // killEnemy();
+    fill(200);
+    rect(enemy.x, enemy.y, enemy.width, enemy.height);
+    healthBarDisplay(enemy);
   }
 }
+
+//not yet working
+// function killEnemy() {
+//   for (let enemy of enemyArray) {
+//     enemy.currentHP -=1;
+//     if (enemy.currentHP <= 0) {
+//       enemyArray.splice(indexOf[someEnemy], 1);
+//     }
+//   }
+// }
 
 function changeSpriteStates() {
   if (player.currentHP < player.maxHP/2) {
@@ -163,45 +181,56 @@ function displayPlayer() {
   }
 
   //placeholder h
-  fill("blue")
+  fill("blue");
   rect(player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.hW, player.spriteStates.hH);
   //placeholder t
-  fill("purple")
+  fill("purple");
   rect(player.spriteStates.tX, player.spriteStates.tY, player.spriteStates.tW, player.spriteStates.tH);
   //placeholder l
-  fill("green")
+  fill("green");
   rect(player.spriteStates.lX, player.spriteStates.lY, player.spriteStates.lW, player.spriteStates.lH);
 
 }
 
-function tookDamage(guy, attacker) {
-  guy.currentHP -= attacker.atk - (attacker.atk/guy.def);
+//temporary function
+function keyIsPressed() {
+  if (key === "v") {
+    tookDamage(player, enemyArray[1]);
+  }
 }
 
-function healthBarDisplay(x, y, guy) {
+function tookDamage(guy, attacker) {
+  guy.currentHP -= attacker.atk - attacker.atk/guy.def;
+}
+
+function healthBarDisplay(guy) {
   //grey bar
   let greyBarWidth = 110;
-  let greyX = x + guy.width/2 - greyBarWidth/2;
-  let greyY = y + guy.height;
+  let greyX = guy.x + guy.width/2 - greyBarWidth/2;
+  let greyY = guy.y + guy.height + 20;
 
   noStroke();
   fill(100);
   rect(greyX, greyY, greyBarWidth, 30);
 
-  //green
+  //health is green
   if (guy.currentHP >= guy.maxHP/2){
     fill(80, 230, 120);
   }
-  //red
+  //health is red
   else if (guy.currentHP <= guy.maxHP/5){
     fill(255, 120, 80);
   }
-  //yellow
+  //health is yellow
   else {
     fill(210, 210, 80);
   }
-
+  
   rect(greyX+5, greyY+5, guy.currentHP, 20);
+  //not working V want coloured health bar to always take up the same amount of space, but rely on percentages
+  // rectMode(CENTER);
+  // rect(greyX-greyBarWidth/2, greyY+5, guy.currentHP, 20);
+  // rectMode(CORNER);
 }
 
 function displayPoints() {
