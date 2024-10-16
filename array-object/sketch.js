@@ -9,6 +9,14 @@
 let enemyArray = [];
 let amountOfEnemies = 3;
 
+//turn order...
+//is players turn:
+//true> buttons clickable + some visual indication??
+//false> turn order iterates through enemy array:
+//for (let enemy of enemyArray) {
+//
+//}
+
 //enemy spawn area
 
 let enemySpawnWidth = 800;
@@ -18,8 +26,11 @@ let enemySpawnX = 600;
 let points = 100;
 let pointsSpent = 0;
 
-//state variable for instructions
-let readInstructions = false;
+//game states  // "start" // "ongoing" // "over"
+let gameState = "ongoing";
+
+//
+isPlayersTurn = true;
 
 //player objects
 let player = {
@@ -79,18 +90,15 @@ function setup() {
   //interval for slowest speed rA -> default
 }
 
-function animatePlayer(speed) {
-  speed = "normal";
-  if (speed === "normal") {
-
-  }
-}
-
 function draw() {
   ///////keep
+  isGameOver();
+
+  // if (gameState = "ongoing") {}
   background(0);
   displayPoints();
 
+  turnOrder();
 
   ///////testing 
   healthBarDisplay(player);
@@ -105,6 +113,25 @@ function draw() {
 
   displayEnemy();
   displayPlayer();
+
+
+  // background(0);
+  // displayPoints();
+
+
+  // ///////testing 
+  // healthBarDisplay(player);
+  // // if (player.currentHP > 0) {
+  // //   player.currentHP -= 1;
+  // // }
+
+  // fill(20);
+
+  // //spawn area for enemies
+  // rect(enemySpawnX, 100, enemySpawnWidth, height-200);
+
+  // displayEnemy();
+  // displayPlayer();
 }
 
 // function increaseEnemies() {
@@ -117,7 +144,7 @@ function spawnEnemy() {
   let someEnemy = {
     maxHP: randomHP, 
     currentHP: randomHP,
-    atk: random(50, 100),
+    atk: random(5, 15),
     width: 80,
     height: 80,
     x: random(enemySpawnX + 80, enemySpawnX + enemySpawnWidth-80),
@@ -125,6 +152,18 @@ function spawnEnemy() {
   };
   enemyArray.push(someEnemy);
 
+}
+
+function turnOrder() {
+  if (isPlayersTurn) {
+    //things that happen on the players turn...
+  }
+  else if (!isPlayersTurn) {
+    for (let enemy of enemyArray) {
+      causedDamage(player, enemy.atk);
+    }
+    isPlayersTurn = true;
+  }
 }
 
 function displayEnemy() {
@@ -193,44 +232,63 @@ function displayPlayer() {
 }
 
 //temporary function
-function keyIsPressed() {
-  if (key === "v") {
-    tookDamage(player, enemyArray[1]);
+function mouseClicked() {
+  // causedDamage(player, 10);
+  isPlayersTurn = false;
+
+}
+
+function animatePlayer(speed) {
+  speed = "normal";
+  if (speed === "normal") {
+
   }
 }
 
-function tookDamage(guy, attacker) {
-  guy.currentHP -= attacker.atk - attacker.atk/guy.def;
+function causedDamage(guy, damage) {
+  // guy.currentHP -= attacker.atk - attacker.atk/guy.def;
+  if (guy.currentHP > 0) {
+    guy.currentHP -= damage - damage/guy.def;
+  }
+}
+
+function isGameOver() {
+  if (player.currentHP < 0) {
+    gameState = "over";
+  }
 }
 
 function healthBarDisplay(guy) {
-  //grey bar
-  let greyBarWidth = 110;
-  let greyX = guy.x + guy.width/2 - greyBarWidth/2;
-  let greyY = guy.y + guy.height + 20;
+  if (guy.currentHP > 0) {
+    //grey bar
+    let greyBarWidth = 110;
+    let greyX = guy.x + guy.width/2 - greyBarWidth/2;
+    let greyY = guy.y + guy.height + 20;
 
-  noStroke();
-  fill(100);
-  rect(greyX, greyY, greyBarWidth, 30);
+    noStroke();
+    fill(100);
+    rect(greyX, greyY, greyBarWidth, 30);
 
-  //health is green
-  if (guy.currentHP >= guy.maxHP/2){
-    fill(80, 230, 120);
+    //health is green
+    if (guy.currentHP >= guy.maxHP/2){
+      fill(80, 230, 120);
+    }
+    //health is red
+    else if (guy.currentHP <= guy.maxHP/5){
+      fill(255, 120, 80);
+    }
+    //health is yellow
+    else {
+      fill(210, 210, 80);
+    }
+    
+    rect(greyX+5, greyY+5, guy.currentHP, 20);
+    //not working V want coloured health bar to always take up the same amount of space, but rely on percentages
+    // rectMode(CENTER);
+    // rect(greyX-greyBarWidth/2, greyY+5, guy.currentHP, 20);
+    // rectMode(CORNER);
   }
-  //health is red
-  else if (guy.currentHP <= guy.maxHP/5){
-    fill(255, 120, 80);
-  }
-  //health is yellow
-  else {
-    fill(210, 210, 80);
-  }
-  
-  rect(greyX+5, greyY+5, guy.currentHP, 20);
-  //not working V want coloured health bar to always take up the same amount of space, but rely on percentages
-  // rectMode(CENTER);
-  // rect(greyX-greyBarWidth/2, greyY+5, guy.currentHP, 20);
-  // rectMode(CORNER);
+
 }
 
 function displayPoints() {
