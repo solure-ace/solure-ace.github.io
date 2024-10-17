@@ -10,6 +10,7 @@
 - [Terrain Generation](terrain)
 - [Bubble Object Demo](bubble)
 - [Sound effects Demo](sound-fx)
+- [Translate and rotate](translate-rotate)
 
 ## Projects
 - [Interactive Scene](interactive-scene)

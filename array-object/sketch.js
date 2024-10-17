@@ -90,6 +90,10 @@ function setup() {
   //interval for slowest speed rA -> default
 }
 
+
+
+
+
 function draw() {
   ///////keep
   isGameOver();
@@ -118,7 +122,6 @@ function draw() {
   // background(0);
   // displayPoints();
 
-
   // ///////testing 
   // healthBarDisplay(player);
   // // if (player.currentHP > 0) {
@@ -126,32 +129,46 @@ function draw() {
   // // }
 
   // fill(20);
-
   // //spawn area for enemies
   // rect(enemySpawnX, 100, enemySpawnWidth, height-200);
-
   // displayEnemy();
   // displayPlayer();
 }
+
+
+
+
 
 // function increaseEnemies() {
 //   // only increase from zero if (readIntructions === true)
 //   // increase amount of enemies based on players (total) points
 // }
 
+
+
+
+
+
+
 function spawnEnemy() {
   let randomHP = random(50, 150);
   let someEnemy = {
     maxHP: randomHP, 
     currentHP: randomHP,
-    atk: random(5, 15),
+    atk: 5,//random(5, 15),
     width: 80,
     height: 80,
     x: random(enemySpawnX + 80, enemySpawnX + enemySpawnWidth-80),
     y: random(120, height-220),
+    isSelected: false,
   };
   enemyArray.push(someEnemy);
 
+}
+
+
+function chooseEnemy() {
+  // click on enemy during player turn the enemy.isSelected = true
 }
 
 function turnOrder() {
@@ -160,18 +177,26 @@ function turnOrder() {
   }
   else if (!isPlayersTurn) {
     for (let enemy of enemyArray) {
+      enemy.isSelected = true;
       causedDamage(player, enemy.atk);
+      enemy.isSelected = false;
     }
-    isPlayersTurn = true;
   }
+  isPlayersTurn = true;
 }
+
 
 function displayEnemy() {
   for (let enemy of enemyArray) {
     // killEnemy();
     fill(200);
+    if (enemy.isSelected) {
+      stroke(260);
+      strokeWeight(3);
+    }
     rect(enemy.x, enemy.y, enemy.width, enemy.height);
     healthBarDisplay(enemy);
+    noStroke();
   }
 }
 
