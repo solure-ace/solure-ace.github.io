@@ -8,37 +8,28 @@
 //enemies
 let enemyArray = [];
 let amountOfEnemies = 3;
-
-//turn order...
-//is players turn:
-//true> buttons clickable + some visual indication??
-//false> turn order iterates through enemy array:
-//for (let enemy of enemyArray) {
-//
-//}
-
 //enemy spawn area
-
 let enemySpawnWidth = 800;
 let enemySpawnX = 600;
 
 //points
 let points = 100;
 let pointsSpent = 0;
+let enemiesDefeated = 0;
 
 //game states  // "start" // "ongoing" // "over"
-let gameState = "ongoing";
+let gameState = "start";
 
-//
+
+//player
 isPlayersTurn = true;
-
 //player objects
 let player = {
   currentHP: 100,
   maxHP: 100,
   height: 450,
   width: 100,
-  atk: 50,
+  atk: 30,
   def: 50,
   x: 0,
   y: 120,
@@ -50,14 +41,6 @@ let player = {
     hW: 100,
     hX: 0,
     hY: 120,
-    // // right arms
-    // rA: "default",
-    // rAX: 0,
-    // rAY: 120,
-    // //left arm
-    // lA: "default",
-    // lAX: 0,
-    // lAY: 120,
     //torso
     t: "default",
     tH: 120,
@@ -71,6 +54,8 @@ let player = {
     lY: 360,
   },
 };
+
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -90,65 +75,65 @@ function setup() {
   //interval for slowest speed rA -> default
 }
 
-
-
-
-
 function draw() {
   ///////keep
   isGameOver();
 
-  // if (gameState = "ongoing") {}
-  background(0);
-  displayPoints();
+  if (gameState === "start") {
+    background(30);
+    fill(255);
+    textSize(30);
+    textStyle(BOLD);
+    textAlign(CENTER, CENTER);
+    text('Click to Start', width/2, height/2);
+  }
 
-  turnOrder();
+  else if (gameState === "ongoing") {
+    background(0);
+    displayStats();
 
-  ///////testing 
-  healthBarDisplay(player);
-  // if (player.currentHP > 0) {
-  //   player.currentHP -= 1;
-  // }
+    ///////testing 
+    healthBarDisplay(player);
+    // if (player.currentHP > 0) {
+    //   player.currentHP -= 1;
+    // }
 
-  fill(20);
+    turnOrder();
+    fill(20);
 
-  //spawn area for enemies
-  rect(enemySpawnX, 100, enemySpawnWidth, height-200);
+    //spawn area for enemies
+    rect(enemySpawnX, 100, enemySpawnWidth, height-200);
 
-  displayEnemy();
-  displayPlayer();
+    displayEnemy();
+    displayPlayer();
+  }
 
+  else if(gameState === "over") {
+    background(30);
+    fill(255);
+    textSize(30);
+    textStyle(BOLD);
+    textAlign(CENTER, CENTER);
+    text('Game Over', width/2, height/2-100);
 
-  // background(0);
-  // displayPoints();
+    textSize(16);
+    text(`Total Points: ${str(points)}`, width/2, height/2-50);
+    text(`Enemies Defeated: ${str(enemiesDefeated)}`, width/2, height/2);
 
-  // ///////testing 
-  // healthBarDisplay(player);
-  // // if (player.currentHP > 0) {
-  // //   player.currentHP -= 1;
-  // // }
-
-  // fill(20);
-  // //spawn area for enemies
-  // rect(enemySpawnX, 100, enemySpawnWidth, height-200);
-  // displayEnemy();
-  // displayPlayer();
+    textSize(20);
+    textStyle(BOLDITALIC);
+    text('Click to Restart', width/2, height/2+100);
+  }
 }
 
 
 
-
-
 // function increaseEnemies() {
-//   // only increase from zero if (readIntructions === true)
-//   // increase amount of enemies based on players (total) points
+// increase from 1 - 3, they collide if there is too many
+//at 1 increase after 3 killed
+//at 2 increase after 5 killed
+//stay at three untill/unless i change the spawn parameters for enemies
 // }
-
-
-
-
-
-
 
 function spawnEnemy() {
   let randomHP = random(50, 150);
@@ -166,10 +151,41 @@ function spawnEnemy() {
 
 }
 
-
 function chooseEnemy() {
   // click on enemy during player turn the enemy.isSelected = true
+  //i think i could put this in display enemy instead tbh
 }
+
+function displayEnemy() {
+  for (let enemy of enemyArray) {
+    // killEnemy();
+    fill(200);
+
+    //not actually using at the moment v
+    // if (enemy.isSelected) {
+    //   stroke(260);
+    //   strokeWeight(3);
+    // }
+
+
+    rect(enemy.x, enemy.y, enemy.width, enemy.height);
+    healthBarDisplay(enemy);
+    noStroke();
+  }
+
+}
+
+//not yet working
+// function killEnemy() {
+//   for (let enemy of enemyArray) {
+//     enemy.currentHP -=1;
+//     if (enemy.currentHP <= 0) {
+//       enemyArray.splice(indexOf[someEnemy], 1);
+//     }
+//   }
+// }
+
+
 
 function turnOrder() {
   if (isPlayersTurn) {
@@ -186,29 +202,6 @@ function turnOrder() {
 }
 
 
-function displayEnemy() {
-  for (let enemy of enemyArray) {
-    // killEnemy();
-    fill(200);
-    if (enemy.isSelected) {
-      stroke(260);
-      strokeWeight(3);
-    }
-    rect(enemy.x, enemy.y, enemy.width, enemy.height);
-    healthBarDisplay(enemy);
-    noStroke();
-  }
-}
-
-//not yet working
-// function killEnemy() {
-//   for (let enemy of enemyArray) {
-//     enemy.currentHP -=1;
-//     if (enemy.currentHP <= 0) {
-//       enemyArray.splice(indexOf[someEnemy], 1);
-//     }
-//   }
-// }
 
 function changeSpriteStates() {
   if (player.currentHP < player.maxHP/2) {
@@ -256,13 +249,6 @@ function displayPlayer() {
 
 }
 
-//temporary function
-function mouseClicked() {
-  // causedDamage(player, 10);
-  isPlayersTurn = false;
-
-}
-
 function animatePlayer(speed) {
   speed = "normal";
   if (speed === "normal") {
@@ -270,16 +256,42 @@ function animatePlayer(speed) {
   }
 }
 
-function causedDamage(guy, damage) {
-  // guy.currentHP -= attacker.atk - attacker.atk/guy.def;
-  if (guy.currentHP > 0) {
-    guy.currentHP -= damage - damage/guy.def;
+
+
+//temporary function
+function mouseClicked() {
+  // causedDamage(player, 10);
+  if (gameState === "start") {
+    gameState = "ongoing";
   }
+  else if(gameState === "ongoing") {
+    isPlayersTurn = false;
+  }
+  else if(gameState === "over") {
+    resetGame();
+    gameState = "start";
+  }
+
 }
+
+
 
 function isGameOver() {
   if (player.currentHP < 0) {
     gameState = "over";
+  }
+}
+
+function resetGame() {
+  player.currentHP = player.maxHP;
+}
+
+
+
+function causedDamage(guy, damage) {
+  // guy.currentHP -= attacker.atk - attacker.atk/guy.def;
+  if (guy.currentHP > 0) {
+    guy.currentHP -= damage - damage/guy.def;
   }
 }
 
@@ -307,7 +319,7 @@ function healthBarDisplay(guy) {
       fill(210, 210, 80);
     }
     
-    rect(greyX+5, greyY+5, guy.currentHP, 20);
+    rect(greyX+5, greyY+5, guy.currentHP/guy.maxHP*100, 20);
     //not working V want coloured health bar to always take up the same amount of space, but rely on percentages
     // rectMode(CENTER);
     // rect(greyX-greyBarWidth/2, greyY+5, guy.currentHP, 20);
@@ -316,9 +328,12 @@ function healthBarDisplay(guy) {
 
 }
 
-function displayPoints() {
+function displayStats() {
   fill(255);
   textSize(16);
   textStyle(BOLD);
-  text(`points:${str(points - pointsSpent)}`, 50, 50);
+  textAlign(LEFT, TOP);
+  text(`points: ${str(points - pointsSpent)}`, 30, 40);
+  text(`atk: ${str(player.atk)}`, 30, 65);
+  text(`def: ${str(player.def)}`, 30, 90);
 }
