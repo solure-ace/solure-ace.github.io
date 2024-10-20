@@ -24,6 +24,11 @@ let gameState = "start";
 //player
 isPlayersTurn = true;
 //player objects
+let legs;
+let backhair;
+let torso;
+let head;
+
 let player = {
   currentHP: 100,
   maxHP: 100,
@@ -54,6 +59,13 @@ let player = {
     lY: 360,
   },
 };
+
+function preload() {
+  legs = loadImage("playerlegs.png");
+  backhair = loadImage("playerbackhair.png");
+  torso = loadImage("playertorso.png");
+  head = loadImage("playerhead.png")
+}
 
 
 
@@ -238,15 +250,18 @@ function displayPlayer() {
   }
 
   //placeholder h
-  fill("blue");
-  rect(player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.hW, player.spriteStates.hH);
+  fill(30)
+  // rect(180, 510, 170, 70)
+  // image(legs, player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.lW, player.spriteStates.lH );
+  image(legs, player.x-50, player.y+25, 200*1.1, 400*1.1);
+  // rect(player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.hW, player.spriteStates.hH);
   //placeholder t
-  fill("purple");
-  rect(player.spriteStates.tX, player.spriteStates.tY, player.spriteStates.tW, player.spriteStates.tH);
+  image(backhair, player.x-50, player.y+25, 200*1.1, 400*1.1);
+  // rect(player.spriteStates.tX, player.spriteStates.tY, player.spriteStates.tW, player.spriteStates.tH);
   //placeholder l
-  fill("green");
-  rect(player.spriteStates.lX, player.spriteStates.lY, player.spriteStates.lW, player.spriteStates.lH);
-
+  image(torso, player.x-50, player.y+25, 200*1.1, 400*1.1);
+  // rect(player.spriteStates.lX, player.spriteStates.lY, player.spriteStates.lW, player.spriteStates.lH);
+  image(head, player.x-50, player.y+25, 200*1.1, 400*1.1);
 }
 
 function animatePlayer(speed) {
