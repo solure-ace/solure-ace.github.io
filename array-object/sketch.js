@@ -4,11 +4,13 @@
 //
 // Extra for Experts:
 // -object within an object ('player.spriteStates.h')
-//  Math.trunc
+// -Math.trunc
+// -enemyArray[enemyIndex].atk
 
 //enemies
 let enemyArray = [];
 let amountOfEnemies = 1;
+let enemyIndex = 0;
 //enemy spawn area
 let enemySpawnWidth = 800;
 let enemySpawnX = 600;
@@ -17,6 +19,13 @@ let enemySpawnX = 600;
 let points = 0;
 let pointsSpent = 0;
 let enemiesDefeated = 0;
+
+//shop/buttons
+let buttonsX = 30;
+let buttonsY = 150;
+let buttonsWidth = 80;
+let buttonsHeight = 40;
+let healthCost = 100;
 
 //game states  // "start" // "ongoing" // "over"
 let gameState = "start";
@@ -35,7 +44,7 @@ let player = {
   maxHP: 100,
   height: 450,
   width: 100,
-  atk: 20,
+  atk: 30,
   def: 50,
   x: 0,
   y: 120,
@@ -65,7 +74,7 @@ function preload() {
   legs = loadImage("playerlegs.png");
   backHair = loadImage("playerbackHair.png");
   torso = loadImage("playertorso.png");
-  head = loadImage("playerhead.png")
+  head = loadImage("playerhead.png");
 }
 
 
@@ -112,6 +121,8 @@ function draw() {
     //spawn area for enemies
     rect(enemySpawnX, 100, enemySpawnWidth, height-200);
 
+    healthButton();
+
     displayEnemy();
     displayPlayer();
     healthBarDisplay(player);
@@ -143,7 +154,7 @@ function spawnEnemy() {
   let someEnemy = {
     maxHP: randomHP, 
     currentHP: randomHP,
-    atk: 5,//random(5, 15),
+    atk: random(5, 15),
     def: random(10, 30),
     width: 80,
     height: 80,
@@ -175,7 +186,6 @@ function spawnEnemyWaves() {
 function displayEnemy() {
   for (let enemy of enemyArray) {
     if (enemy.currentHP > 0) { 
-      // killEnemy();
       fill(200);
 
       //no current application 
@@ -190,9 +200,9 @@ function displayEnemy() {
       healthBarDisplay(enemy);
 
       if (mouseX > enemy.x && mouseX < enemy.x + enemy.width && mouseY > enemy.y && mouseY < enemy.y + enemy.height) {
-        fill(255, 120, 80)  
-        rect(enemy.x+20, enemy.y+20, enemy.width-40, enemy.height-40)
-        }
+        fill(255, 120, 80);
+        rect(enemy.x+20, enemy.y+20, enemy.width-40, enemy.height-40);
+      }
     }
     else {
       enemyArray.splice(enemyArray.indexOf[enemy], 1);
@@ -205,14 +215,19 @@ function displayEnemy() {
 
 
 function turnOrder() {
-  if (!isPlayersTurn){
-    player.currentHP -= enemyArray[random(0, enemyArray.length-1)];
-    }
+  if (enemyIndex >= amountOfEnemies) {
+    enemyIndex = 0;
+  }
+  if (!isPlayersTurn) {
+    player.currentHP -= enemyArray[enemyIndex].atk - enemyArray[enemyIndex].atk/player.def ;
+    enemyIndex += 1;
+    isPlayersTurn = true;
   }
 
 
+}
 
-//not using
+//not currently using :(
 // function changeSpriteStates() {
 //   if (player.currentHP < player.maxHP/2) {
 //     player.spriteStates.h = "low";
@@ -278,13 +293,19 @@ function mouseClicked() {
   else if(gameState === "ongoing") {
 
     if (isPlayersTurn){
+      if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsHeight && mouseY < buttonsHeight + buttonsY && points > healthCost) {
+        players.currentHP = player.maxHP;
+        pointsSpent += healthCost;
+      }
+
       for (let enemy of enemyArray) {
         if (mouseX > enemy.x && mouseX < enemy.x + enemy.width && mouseY > enemy.y && mouseY < enemy.y + enemy.height) {
           enemy.currentHP -= player.atk - player.atk/enemy.def;
-          }
+          isPlayersTurn = false;
+        }
       }
-  }
-
+    }
+    
   }
   else if(gameState === "over") {
     resetGame();
@@ -308,6 +329,25 @@ function resetGame() {
   pointsSpent = 0;
   enemiesDefeated = 0;
 }
+
+
+function healthButton() {
+  if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsHeight && mouseY < buttonsHeight + buttonsY && isPlayersTurn) {
+    fill("red");
+    rect(buttonsX, buttonsY, buttonsWidth, buttonsHeight);
+    fill(255);
+    textSize(16);
+    text('cost:100', buttonsX+ 5, buttonsY + 10);
+  }
+  else {
+    fill(40);
+    rect(buttonsX, buttonsY, buttonsWidth, buttonsHeight);
+    textSize(16);
+    fill(0);
+    text('HP+', buttonsX + 10, buttonsY + 10);
+  }
+}
+
 
 function healthBarDisplay(guy) {
   if (guy.currentHP > 0) {
@@ -334,12 +374,7 @@ function healthBarDisplay(guy) {
     }
     
     rect(greyX+5, greyY+5, guy.currentHP/guy.maxHP*100, 20);
-    //not working V want coloured health bar to always take up the same amount of space, but rely on percentages
-    // rectMode(CENTER);
-    // rect(greyX-greyBarWidth/2, greyY+5, guy.currentHP, 20);
-    // rectMode(CORNER);
   }
-
 }
 
 function displayStats() {
