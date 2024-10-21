@@ -4,16 +4,17 @@
 //
 // Extra for Experts:
 // -object within an object ('player.spriteStates.h')
+//  Math.trunc
 
 //enemies
 let enemyArray = [];
-let amountOfEnemies = 3;
+let amountOfEnemies = 1;
 //enemy spawn area
 let enemySpawnWidth = 800;
 let enemySpawnX = 600;
 
 //points
-let points = 100;
+let points = 0;
 let pointsSpent = 0;
 let enemiesDefeated = 0;
 
@@ -25,7 +26,7 @@ let gameState = "start";
 isPlayersTurn = true;
 //player objects
 let legs;
-let backhair;
+let backHair;
 let torso;
 let head;
 
@@ -34,7 +35,7 @@ let player = {
   maxHP: 100,
   height: 450,
   width: 100,
-  atk: 30,
+  atk: 20,
   def: 50,
   x: 0,
   y: 120,
@@ -62,7 +63,7 @@ let player = {
 
 function preload() {
   legs = loadImage("playerlegs.png");
-  backhair = loadImage("playerbackhair.png");
+  backHair = loadImage("playerbackHair.png");
   torso = loadImage("playertorso.png");
   head = loadImage("playerhead.png")
 }
@@ -104,12 +105,7 @@ function draw() {
     background(0);
     displayStats();
 
-    ///////testing 
-    healthBarDisplay(player);
-    // if (player.currentHP > 0) {
-    //   player.currentHP -= 1;
-    // }
-
+    spawnEnemyWaves();
     turnOrder();
     fill(20);
 
@@ -118,6 +114,7 @@ function draw() {
 
     displayEnemy();
     displayPlayer();
+    healthBarDisplay(player);
   }
 
   else if(gameState === "over") {
@@ -140,12 +137,6 @@ function draw() {
 
 
 
-// function increaseEnemies() {
-// increase from 1 - 3, they collide if there is too many
-//at 1 increase after 3 killed
-//at 2 increase after 5 killed
-//stay at three untill/unless i change the spawn parameters for enemies
-// }
 
 function spawnEnemy() {
   let randomHP = random(50, 150);
@@ -153,6 +144,7 @@ function spawnEnemy() {
     maxHP: randomHP, 
     currentHP: randomHP,
     atk: 5,//random(5, 15),
+    def: random(10, 30),
     width: 80,
     height: 80,
     x: random(enemySpawnX + 80, enemySpawnX + enemySpawnWidth-80),
@@ -163,81 +155,87 @@ function spawnEnemy() {
 
 }
 
-function chooseEnemy() {
-  // click on enemy during player turn the enemy.isSelected = true
-  //i think i could put this in display enemy instead tbh
+function spawnEnemyWaves() {
+  if (enemyArray.length === 0) {
+    if (enemiesDefeated <= 3) {
+      spawnEnemy();
+    } 
+    else if(enemiesDefeated <= 5) {
+      spawnEnemy();
+      spawnEnemy();
+    }
+    else if (enemiesDefeated > 5 ) {
+      for (let i = 0; i < 3; i++) {
+        spawnEnemy();
+      }
+    }
+  }
 }
 
 function displayEnemy() {
   for (let enemy of enemyArray) {
-    // killEnemy();
-    fill(200);
+    if (enemy.currentHP > 0) { 
+      // killEnemy();
+      fill(200);
 
-    //not actually using at the moment v
-    // if (enemy.isSelected) {
-    //   stroke(260);
-    //   strokeWeight(3);
-    // }
+      //no current application 
+      // if (enemy.isSelected) {
+      //   stroke(260);
+      //   strokeWeight(3);
+      // }
 
 
-    rect(enemy.x, enemy.y, enemy.width, enemy.height);
-    healthBarDisplay(enemy);
-    noStroke();
+      rect(enemy.x, enemy.y, enemy.width, enemy.height);
+      noStroke();
+      healthBarDisplay(enemy);
+
+      if (mouseX > enemy.x && mouseX < enemy.x + enemy.width && mouseY > enemy.y && mouseY < enemy.y + enemy.height) {
+        fill(255, 120, 80)  
+        rect(enemy.x+20, enemy.y+20, enemy.width-40, enemy.height-40)
+        }
+    }
+    else {
+      enemyArray.splice(enemyArray.indexOf[enemy], 1);
+      enemiesDefeated += 1;
+      points += enemy.maxHP*1.5;
+    }
   }
-
 }
-
-//not yet working
-// function killEnemy() {
-//   for (let enemy of enemyArray) {
-//     enemy.currentHP -=1;
-//     if (enemy.currentHP <= 0) {
-//       enemyArray.splice(indexOf[someEnemy], 1);
-//     }
-//   }
-// }
 
 
 
 function turnOrder() {
-  if (isPlayersTurn) {
-    //things that happen on the players turn...
-  }
-  else if (!isPlayersTurn) {
-    for (let enemy of enemyArray) {
-      enemy.isSelected = true;
-      causedDamage(player, enemy.atk);
-      enemy.isSelected = false;
+  if (!isPlayersTurn){
+    player.currentHP -= enemyArray[random(0, enemyArray.length-1)];
     }
   }
-  isPlayersTurn = true;
-}
 
 
 
-function changeSpriteStates() {
-  if (player.currentHP < player.maxHP/2) {
-    player.spriteStates.h = "low";
-  }
-  else if (player.currentHP >= player.maxHP/2) {
-    player.spriteStates.h = "default";
-    player.spriteStates.t = "default";
-    player.spriteStates.rA = "default";
-    player.spriteStates.lA = "default";
-  }
-  if (tookDamage(player)) {
-    player.spriteStates.h = "hit";
-    player.spriteStates.t = "hit";
-    player.spriteStates.rA = "hit";
-    player.spriteStates.lA = "hit";
-    for(let i = 0; i < 300; i++) {
-      player.spriteStates.h = "default";
-      player.spriteStates.t = "default";
-      player.spriteStates.rA = "default";
-      player.spriteStates.lA = "default";
-    }
-  }
-}
+//not using
+// function changeSpriteStates() {
+//   if (player.currentHP < player.maxHP/2) {
+//     player.spriteStates.h = "low";
+//   }
+//   else if (player.currentHP >= player.maxHP/2) {
+//     player.spriteStates.h = "default";
+//     player.spriteStates.t = "default";
+//     player.spriteStates.rA = "default";
+//     player.spriteStates.lA = "default";
+//   }
+//   if (tookDamage(player)) {
+//     player.spriteStates.h = "hit";
+//     player.spriteStates.t = "hit";
+//     player.spriteStates.rA = "hit";
+//     player.spriteStates.lA = "hit";
+//     for(let i = 0; i < 300; i++) {
+//       player.spriteStates.h = "default";
+//       player.spriteStates.t = "default";
+//       player.spriteStates.rA = "default";
+//       player.spriteStates.lA = "default";
+//     }
+//   }
+// }
 
 function displayPlayer() {
 
@@ -249,19 +247,18 @@ function displayPlayer() {
     fill("green");
   }
 
+  // image(legs, player.x-50, player.y+25, 200*1.1, 400*1.1);
+  // image(backHair, player.x-50, player.y+25, 200*1.1, 400*1.1);
+  // image(torso, player.x-50, player.y+25, 200*1.1, 400*1.1);
+  // image(head, player.x-50, player.y+25, 200*1.1, 400*1.1);
+
   //placeholder h
-  fill(30)
-  // rect(180, 510, 170, 70)
-  // image(legs, player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.lW, player.spriteStates.lH );
-  image(legs, player.x-50, player.y+25, 200*1.1, 400*1.1);
-  // rect(player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.hW, player.spriteStates.hH);
+  rect( player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.hW, player.spriteStates.hH );
   //placeholder t
-  image(backhair, player.x-50, player.y+25, 200*1.1, 400*1.1);
-  // rect(player.spriteStates.tX, player.spriteStates.tY, player.spriteStates.tW, player.spriteStates.tH);
+  rect(player.spriteStates.tX, player.spriteStates.tY, player.spriteStates.tW, player.spriteStates.tH);
   //placeholder l
-  image(torso, player.x-50, player.y+25, 200*1.1, 400*1.1);
-  // rect(player.spriteStates.lX, player.spriteStates.lY, player.spriteStates.lW, player.spriteStates.lH);
-  image(head, player.x-50, player.y+25, 200*1.1, 400*1.1);
+  rect(player.spriteStates.lX, player.spriteStates.lY, player.spriteStates.lW, player.spriteStates.lH);
+
 }
 
 function animatePlayer(speed) {
@@ -273,14 +270,21 @@ function animatePlayer(speed) {
 
 
 
-//temporary function
 function mouseClicked() {
-  // causedDamage(player, 10);
   if (gameState === "start") {
     gameState = "ongoing";
   }
+
   else if(gameState === "ongoing") {
-    isPlayersTurn = false;
+
+    if (isPlayersTurn){
+      for (let enemy of enemyArray) {
+        if (mouseX > enemy.x && mouseX < enemy.x + enemy.width && mouseY > enemy.y && mouseY < enemy.y + enemy.height) {
+          enemy.currentHP -= player.atk - player.atk/enemy.def;
+          }
+      }
+  }
+
   }
   else if(gameState === "over") {
     resetGame();
@@ -299,15 +303,10 @@ function isGameOver() {
 
 function resetGame() {
   player.currentHP = player.maxHP;
-}
-
-
-
-function causedDamage(guy, damage) {
-  // guy.currentHP -= attacker.atk - attacker.atk/guy.def;
-  if (guy.currentHP > 0) {
-    guy.currentHP -= damage - damage/guy.def;
-  }
+  amountOfEnemies = 1;
+  points = 0;
+  pointsSpent = 0;
+  enemiesDefeated = 0;
 }
 
 function healthBarDisplay(guy) {
@@ -348,7 +347,7 @@ function displayStats() {
   textSize(16);
   textStyle(BOLD);
   textAlign(LEFT, TOP);
-  text(`points: ${str(points - pointsSpent)}`, 30, 40);
+  text(`points: ${str(Math.trunc(points - pointsSpent))}`, 30, 40);
   text(`atk: ${str(player.atk)}`, 30, 65);
   text(`def: ${str(player.def)}`, 30, 90);
 }
