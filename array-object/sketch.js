@@ -1,11 +1,16 @@
 // Array and Object Notation
 // Avery Walker
-// October 12th 2024
-//
+// October 21th 2024
+
+//*Works best in fullscreen
+
 // Extra for Experts:
-// -object within an object ('player.spriteStates.h')
-// -Math.trunc
+// -object within an object? ('player.sprite.h')
+// -Math.trunc()
 // -enemyArray[enemyIndex].atk
+// -Animated player sprite (*animated with code not an animatedpng)
+
+
 
 //enemies
 let enemyArray = [];
@@ -22,18 +27,20 @@ let enemiesDefeated = 0;
 
 //shop/buttons
 let buttonsX = 30;
-let buttonsY = 150;
+let buttonsY = 175;
 let buttonsWidth = 80;
 let buttonsHeight = 40;
+let buttonsGapHeight = 30;
+
 let healthCost = 100;
+let defCost = 150;
+let atkCost = 200;
 
 //game states  // "start" // "ongoing" // "over"
 let gameState = "start";
 
-
 //player
 isPlayersTurn = true;
-//player objects
 let legs;
 let backHair;
 let torso;
@@ -42,31 +49,25 @@ let head;
 let player = {
   currentHP: 100,
   maxHP: 100,
-  height: 450,
-  width: 100,
+  height: 400*1.1,
+  width: 200*1.1,
   atk: 30,
   def: 50,
   x: 0,
-  y: 120,
+  y: 145,
 
-  spriteStates: {
+  sprite: {
     //head
-    h: "default",
-    hH: 100,
-    hW: 100,
     hX: 0,
-    hY: 120,
+    hY: 145,
+    hSpeed: -0.1,
     //torso
-    t: "default",
-    tH: 120,
-    tW: 100,
     tX: 0,
-    tY: 230,
+    tY: 145,
+    tSpeed: -0.1,
     //legs
-    lH: 170,
-    lW: 100,
     lX: 0,
-    lY: 360,
+    lY: 145,
   },
 };
 
@@ -77,24 +78,14 @@ function preload() {
   head = loadImage("playerhead.png");
 }
 
-
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
   //player variables
-  player.x = width/7;
-  player.spriteStates.hX = width/7;
-  player.spriteStates.tX = width/7;
-  player.spriteStates.lX = width/7;
+  player.x = width/7-50;
   //enemy control
   for (let i = 0; i < amountOfEnemies; i++) {
     spawnEnemy();
   }
-
-  //interval for normal speed t+h -> default || rA -> hit
-  //interval for faster speed lA -> default || t+h -> low
-  //interval for fastest speed lA -> hit
-  //interval for slowest speed rA -> default
 }
 
 function draw() {
@@ -103,12 +94,9 @@ function draw() {
 
   if (gameState === "start") {
     background(30);
-    fill(255);
-    textSize(30);
-    textStyle(BOLD);
-    textAlign(CENTER, CENTER);
-    text('Click to Start', width/2, height/2);
+    startScreen();
   }
+
 
   else if (gameState === "ongoing") {
     background(0);
@@ -116,37 +104,55 @@ function draw() {
 
     spawnEnemyWaves();
     turnOrder();
-    fill(20);
 
     //spawn area for enemies
+    turnOrder();
+    fill(20);
     rect(enemySpawnX, 100, enemySpawnWidth, height-200);
 
+    //shop/buttons
     healthButton();
+    defButton();
+    atkButton();
 
+    //player + enemies
     displayEnemy();
+    animatePlayer();
     displayPlayer();
     healthBarDisplay(player);
   }
 
+
   else if(gameState === "over") {
     background(30);
-    fill(255);
-    textSize(30);
-    textStyle(BOLD);
-    textAlign(CENTER, CENTER);
-    text('Game Over', width/2, height/2-100);
 
-    textSize(16);
-    text(`Total Points: ${str(points)}`, width/2, height/2-50);
-    text(`Enemies Defeated: ${str(enemiesDefeated)}`, width/2, height/2);
-
-    textSize(20);
-    textStyle(BOLDITALIC);
-    text('Click to Restart', width/2, height/2+100);
+    endScreen();
   }
 }
 
+function startScreen() {
+  fill(255);
+  textSize(30);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text('Click to Start', width/2, height/2);
+}
 
+function endScreen() {
+  fill(255);
+  textSize(30);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text('Game Over', width/2, height/2-100);
+
+  textSize(16);
+  text(`Total Points: ${str(Math.trunc(points))}`, width/2, height/2-50);
+  text(`Enemies Defeated: ${str(enemiesDefeated)}`, width/2, height/2);
+
+  textSize(20);
+  textStyle(BOLDITALIC);
+  text('Click to Restart', width/2, height/2+100);
+}
 
 
 function spawnEnemy() {
@@ -205,15 +211,14 @@ function displayEnemy() {
       }
     }
     else {
-      enemyArray.splice(enemyArray.indexOf[enemy], 1);
+      enemyArray.splice(enemy, 1);
       enemiesDefeated += 1;
-      points += enemy.maxHP*1.5;
+      points += enemy.maxHP*1.2;
     }
   }
 }
 
-
-
+//controls which enemy attacks
 function turnOrder() {
   if (enemyIndex >= amountOfEnemies) {
     enemyIndex = 0;
@@ -227,59 +232,31 @@ function turnOrder() {
 
 }
 
-//not currently using :(
-// function changeSpriteStates() {
-//   if (player.currentHP < player.maxHP/2) {
-//     player.spriteStates.h = "low";
-//   }
-//   else if (player.currentHP >= player.maxHP/2) {
-//     player.spriteStates.h = "default";
-//     player.spriteStates.t = "default";
-//     player.spriteStates.rA = "default";
-//     player.spriteStates.lA = "default";
-//   }
-//   if (tookDamage(player)) {
-//     player.spriteStates.h = "hit";
-//     player.spriteStates.t = "hit";
-//     player.spriteStates.rA = "hit";
-//     player.spriteStates.lA = "hit";
-//     for(let i = 0; i < 300; i++) {
-//       player.spriteStates.h = "default";
-//       player.spriteStates.t = "default";
-//       player.spriteStates.rA = "default";
-//       player.spriteStates.lA = "default";
-//     }
-//   }
-// }
-
 function displayPlayer() {
-
-  player.spriteStates.h = "low";
-  if (player.spriteStates.h === "low") {
-    fill("yellow");
-  }
-  else { // if (spriteStates.h === "default" && spriteStates.t === "default")
-    fill("green");
-  }
-
-  // image(legs, player.x-50, player.y+25, 200*1.1, 400*1.1);
-  // image(backHair, player.x-50, player.y+25, 200*1.1, 400*1.1);
-  // image(torso, player.x-50, player.y+25, 200*1.1, 400*1.1);
-  // image(head, player.x-50, player.y+25, 200*1.1, 400*1.1);
-
-  //placeholder h
-  rect( player.spriteStates.hX, player.spriteStates.hY, player.spriteStates.hW, player.spriteStates.hH );
-  //placeholder t
-  rect(player.spriteStates.tX, player.spriteStates.tY, player.spriteStates.tW, player.spriteStates.tH);
-  //placeholder l
-  rect(player.spriteStates.lX, player.spriteStates.lY, player.spriteStates.lW, player.spriteStates.lH);
-
+  image(legs, player.x, player.y, player.width, player.height);
+  image(backHair, player.x, player.sprite.hY, player.width, player.height);
+  image(torso, player.x, player.sprite.tY, player.width, player.height);
+  image(head, player.x, player.sprite.hY, player.width, player.height);
+//   //placeholder h
+//   rect( player.sprite.hX, player.sprite.hY, player.sprite.hW, player.sprite.hH );
+//   //placeholder t
+//   rect(player.sprite.tX, player.sprite.tY, player.sprite.tW, player.sprite.tH);
+//   //placeholder l
+//   rect(player.sprite.lX, player.sprite.lY, player.sprite.lW, player.sprite.lH);
 }
 
-function animatePlayer(speed) {
-  speed = "normal";
-  if (speed === "normal") {
+function animatePlayer() {
 
+  //torso
+  player.sprite.tY += player.sprite.tSpeed;
+  if (player.sprite.tY < player.y - 5 || player.sprite.tY > player.y) {
+    player.sprite.tSpeed *= -1;
+  }
+
+  //head (+backHair)
+  player.sprite.hY += player.sprite.hSpeed*0.6;
+  if (player.sprite.hY < player.y - 3 || player.sprite.tY > player.y) {
+    player.sprite.hSpeed *= -1;
   }
 }
 
@@ -293,11 +270,28 @@ function mouseClicked() {
   else if(gameState === "ongoing") {
 
     if (isPlayersTurn){
-      if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsHeight && mouseY < buttonsHeight + buttonsY && points > healthCost) {
-        players.currentHP = player.maxHP;
-        pointsSpent += healthCost;
-      }
 
+      //health+ button
+      if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsHeight && mouseY < buttonsHeight + buttonsY && isPlayersTurn && points >=healthCost) {
+        player.currentHP = player.maxHP;
+        pointsSpent += healthCost;
+        }
+
+      //def+ button
+      if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && 
+        mouseY > buttonsY + buttonsHeight + buttonsGapHeight && mouseY < buttonsY + buttonsHeight*2 + buttonsGapHeight && isPlayersTurn && points >=defCost) {
+        player.def += 5;
+        pointsSpent += defCost;
+        }
+      
+      //atk+ button
+      if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && 
+        mouseY > buttonsY + buttonsHeight*2 + buttonsGapHeight*2 && mouseY < buttonsY + buttonsHeight*3 + buttonsGapHeight*2 && isPlayersTurn && points >= atkCost) {
+          player.atk += 10;
+          pointsSpent += atkCost;
+        }
+
+      //attack enemies
       for (let enemy of enemyArray) {
         if (mouseX > enemy.x && mouseX < enemy.x + enemy.width && mouseY > enemy.y && mouseY < enemy.y + enemy.height) {
           enemy.currentHP -= player.atk - player.atk/enemy.def;
@@ -307,6 +301,7 @@ function mouseClicked() {
     }
     
   }
+
   else if(gameState === "over") {
     resetGame();
     gameState = "start";
@@ -322,32 +317,101 @@ function isGameOver() {
   }
 }
 
+//resets everything to the baseline
 function resetGame() {
   player.currentHP = player.maxHP;
-  amountOfEnemies = 1;
   points = 0;
   pointsSpent = 0;
+
   enemiesDefeated = 0;
+  amountOfEnemies = 1;
+  enemyArray = [];
+
+  player.sprite.tY = 145;
+  player.sprite.hY = 145;
 }
 
 
+
+//returns player to full health (player.currentHP) at the cost of healthCost(100) points
 function healthButton() {
-  if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsHeight && mouseY < buttonsHeight + buttonsY && isPlayersTurn) {
-    fill("red");
+  //mouse hover
+  if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsY && mouseY < buttonsHeight + buttonsY && isPlayersTurn) {
+    fill(255, 120, 80); //red
     rect(buttonsX, buttonsY, buttonsWidth, buttonsHeight);
+
     fill(255);
     textSize(16);
-    text('cost:100', buttonsX+ 5, buttonsY + 10);
+    textAlign(CENTER);
+    text(`Cost: ${str(healthCost)}`, buttonsX + buttonsWidth/2, buttonsY + buttonsHeight/4);
   }
+  //!mouse hover
   else {
-    fill(40);
+    fill(30);
     rect(buttonsX, buttonsY, buttonsWidth, buttonsHeight);
+
     textSize(16);
-    fill(0);
-    text('HP+', buttonsX + 10, buttonsY + 10);
+    textAlign(CENTER);
+    fill(255, 120, 80); //red
+    text('HP+', buttonsX + buttonsWidth/2, buttonsY + buttonsHeight/4);
   }
+  rectMode(CORNER);
 }
 
+//increases the players defense (player.def) at the cost of defCost(150) points
+function defButton() {
+  //mouse hover
+  if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && 
+    mouseY > buttonsY + buttonsHeight + buttonsGapHeight && mouseY < buttonsY + buttonsHeight*2 + buttonsGapHeight && isPlayersTurn) {
+
+    fill(80, 230, 120); //green
+    rect(buttonsX, buttonsY + buttonsHeight + buttonsGapHeight , buttonsWidth, buttonsHeight);
+
+    fill(255);
+    textSize(16);
+    textAlign(CENTER);
+    text(`Cost: ${str(defCost)}`, buttonsX + buttonsWidth/2, buttonsY + buttonsHeight/4 + buttonsHeight + buttonsGapHeight);
+  }
+  //!mouse hover
+  else {
+    fill(30);
+    rect(buttonsX, buttonsY + buttonsHeight + buttonsGapHeight, buttonsWidth, buttonsHeight);
+
+    textSize(16);
+    fill(0);
+    textAlign(CENTER);
+    fill(80, 230, 120); //green
+    text(`DEF+`, buttonsX + buttonsWidth/2, buttonsY + buttonsHeight/4 + buttonsHeight + buttonsGapHeight);
+  }
+  rectMode(CORNER);
+}
+
+// increases the players attack (player.atk) at the cost of atkCost (200) points
+function atkButton() {
+  //mouse hover
+  if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && 
+    mouseY > buttonsY + buttonsHeight*2 + buttonsGapHeight*2 && mouseY < buttonsY + buttonsHeight*3 + buttonsGapHeight*2 && isPlayersTurn) {
+
+    fill(255);
+    rect(buttonsX, buttonsY + buttonsHeight*2 + buttonsGapHeight*2 , buttonsWidth, buttonsHeight);
+
+    fill(30);
+    textSize(16);
+    textAlign(CENTER);
+    text(`Cost: ${str(atkCost)}`, buttonsX + buttonsWidth/2, buttonsY + buttonsHeight/4 + buttonsHeight*2 + buttonsGapHeight*2);
+  }
+  //!mouse hover
+  else {
+    fill(30);
+    rect(buttonsX, buttonsY + buttonsHeight*2 + buttonsGapHeight*2, buttonsWidth, buttonsHeight);
+
+    textSize(16);
+    textAlign(CENTER);
+    fill(255);
+    text(`ATK+`, buttonsX + buttonsWidth/2, buttonsY + buttonsHeight/4 + buttonsHeight*2 + buttonsGapHeight*2);
+  }
+  rectMode(CORNER);
+}
 
 function healthBarDisplay(guy) {
   if (guy.currentHP > 0) {
@@ -382,6 +446,7 @@ function displayStats() {
   textSize(16);
   textStyle(BOLD);
   textAlign(LEFT, TOP);
+
   text(`points: ${str(Math.trunc(points - pointsSpent))}`, 30, 40);
   text(`atk: ${str(player.atk)}`, 30, 65);
   text(`def: ${str(player.def)}`, 30, 90);
