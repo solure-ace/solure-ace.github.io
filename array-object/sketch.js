@@ -272,24 +272,30 @@ function mouseClicked() {
     if (isPlayersTurn){
 
       //health+ button
-      if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsHeight && mouseY < buttonsHeight + buttonsY && isPlayersTurn && points >=healthCost) {
+      if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && mouseY > buttonsHeight && mouseY < buttonsHeight + buttonsY &&
+         isPlayersTurn && points - pointsSpent >=healthCost) {  
+
         player.currentHP = player.maxHP;
         pointsSpent += healthCost;
-        }
+      }
 
       //def+ button
       if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && 
-        mouseY > buttonsY + buttonsHeight + buttonsGapHeight && mouseY < buttonsY + buttonsHeight*2 + buttonsGapHeight && isPlayersTurn && points >=defCost) {
+        mouseY > buttonsY + buttonsHeight + buttonsGapHeight && mouseY < buttonsY + buttonsHeight*2 + buttonsGapHeight &&
+         isPlayersTurn && points - pointsSpent >=defCost) {
+
         player.def += 5;
         pointsSpent += defCost;
-        }
+      }
       
       //atk+ button
       if (mouseX > buttonsX && mouseX < buttonsX + buttonsWidth && 
-        mouseY > buttonsY + buttonsHeight*2 + buttonsGapHeight*2 && mouseY < buttonsY + buttonsHeight*3 + buttonsGapHeight*2 && isPlayersTurn && points >= atkCost) {
-          player.atk += 10;
-          pointsSpent += atkCost;
-        }
+        mouseY > buttonsY + buttonsHeight*2 + buttonsGapHeight*2 && mouseY < buttonsY + buttonsHeight*3 + buttonsGapHeight*2 &&
+         isPlayersTurn && points - pointsSpent >= atkCost) {
+          
+        player.atk += 10;
+        pointsSpent += atkCost;
+      }
 
       //attack enemies
       for (let enemy of enemyArray) {
