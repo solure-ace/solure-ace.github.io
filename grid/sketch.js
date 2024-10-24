@@ -129,3 +129,29 @@ function windowResized() {
   cellSize = height/GRID_SIZE;
 
 }
+
+// function aliveOrDead(theY, theX) {
+//   let neighborsAlive = 0;
+
+//   for( let y = theY - 1; y < theY + 1; y++) {
+//     for (let x = theX - 1; y < theX + 1; x++) {
+
+//       if (x !== theX && y !== theY) {
+//         if(grid[y][x] === 1) {
+//           neighborsAlive += 1;
+//         }
+//       }
+//     }
+//   }
+
+//   if (neighborsAlive < 2) {
+//     grid[theY][theX] = 0;
+//   }
+//   else if (neighborsAlive === 3) {
+//     grid[theY][theX] = 1;
+//   }
+//   else if (neighborsAlive > 3){
+//     grid[theY][theX] = 0;
+//   }
+
+// }
