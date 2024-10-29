@@ -14,6 +14,7 @@
 - [Grid demo](grid)
 - [Game of Life](game-of-life)
 - [rectangle Grid](rect-grid)
+- [Character in Grid](character-in-grid)
 
 ## Projects
 - [Interactive Scene](interactive-scene)
