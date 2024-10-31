@@ -1,11 +1,13 @@
-// Grid Project - Sudoku
+// Grid Project - Sudoku Copy
 // Avery Walker
 // Oct 30th
 //
 // Extra for Experts:
 //
+//does not really do what i want it to....
 
-let answerGrid;
+let grid;
+let testGrid = [[]];
 
 const GRID_SIZE = 9;
 let cellSize;
@@ -17,7 +19,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   cellSize = 60;
 
-  answerGrid = generateSudoku();
+  grid = generateSudoku();
 }
 
 function draw() {
@@ -35,7 +37,7 @@ function displaySudoku() {
       textAlign(CENTER, CENTER);
 
       if (showAllNumbers) {
-        text(`${answerGrid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,   y*cellSize + 100 + cellSize/2);
+        text(`${grid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,   y*cellSize + 100 + cellSize/2);
       }
 
     }
@@ -46,20 +48,21 @@ function displaySudoku() {
 // function mouseClicked() {
 //   for (let y = 0; y < GRID_SIZE; y++) {
 //     for (let x = 0; x < GRID_SIZE; x++) {
-//       text(`${answerGrid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,   y*cellSize + 100 + cellSize/2);
+//       text(`${grid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,   y*cellSize + 100 + cellSize/2);
 //     }
 //   }
 // }
 
+
 function displayNumber() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
-      //            shows number that the mouse hovers over
-      // if (mouseX > x*cellSize + (width/2-cellSize*9/2) && mouseX <x*cellSize + (width/2-cellSize*9/2) + cellSize 
-      // && mouseY > y*cellSize + 100 && mouseY < y*cellSize + 100 + cellSize) {
-      //   text(`${answerGrid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,
-      //     y*cellSize + 100 + cellSize/2);
-      // }
+      //  shows number that the mouse hovers over
+      if (mouseX > x*cellSize + (width/2-cellSize*9/2) && mouseX <x*cellSize + (width/2-cellSize*9/2) + cellSize 
+      && mouseY > y*cellSize + 100 && mouseY < y*cellSize + 100 + cellSize) {
+        text(`${grid[y][x].answer}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,
+          y*cellSize + 100 + cellSize/2);
+      }
 
 
 
@@ -70,16 +73,35 @@ function displayNumber() {
 
 
 function generateSudoku() {
-  let possibleNumbers;
+  // let possibleNumbers;
   let newGrid = [];
+  for (let y = 0; y < GRID_SIZE; y++){
+    // newGrid.push([]);
+    for(let x = 0; x < GRID_SIZE; x++) {
+      // possibleNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      
+      newGrid[y].push(answerNumbers());
+    }
+  }
+  return newGrid;
+}
+
+function answerNumbers() {
+  let possibleNumbers;
+  let sudoku = {
+    isClue: false,
+    playerInput: 0,
+  };
+
   for (let y = 0; y < GRID_SIZE; y++){
     newGrid.push([]);
     for(let x = 0; x < GRID_SIZE; x++) {
       possibleNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       
-      newGrid[y].push(random(possibleNumbers));
+      let answer = sudoku.push(random(possibleNumbers));
     }
   }
+  newGrid[y].push(sudoku);
   return newGrid;
 }
 
