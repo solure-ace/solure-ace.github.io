@@ -6,11 +6,15 @@
 //
 
 let answerGrid;
+let playerGrid;
 
 const GRID_SIZE = 9;
 let cellSize;
 //need a variable per cell about whether to show it or not....
 let showAllNumbers = false;
+let showAnswerGrid = true;
+
+let gamedifficulty = "medium";
 
 
 function setup() {
@@ -18,10 +22,12 @@ function setup() {
   cellSize = 60;
 
   answerGrid = generateSudoku();
+  playerGrid = generateEmptyGrid();
 }
 
 function draw() {
   background(225);
+
   displaySudoku();
   displayNumber();
 }
@@ -42,32 +48,19 @@ function displaySudoku() {
   }
 }
 
-//doesnt work
-// function mouseClicked() {
-//   for (let y = 0; y < GRID_SIZE; y++) {
-//     for (let x = 0; x < GRID_SIZE; x++) {
-//       text(`${answerGrid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,   y*cellSize + 100 + cellSize/2);
-//     }
-//   }
-// }
-
 function displayNumber() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
+
       //            shows number that the mouse hovers over
-      // if (mouseX > x*cellSize + (width/2-cellSize*9/2) && mouseX <x*cellSize + (width/2-cellSize*9/2) + cellSize 
-      // && mouseY > y*cellSize + 100 && mouseY < y*cellSize + 100 + cellSize) {
-      //   text(`${answerGrid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,
-      //     y*cellSize + 100 + cellSize/2);
-      // }
-
-
-
-
+      if (mouseX > x*cellSize + (width/2-cellSize*9/2) && mouseX <x*cellSize + (width/2-cellSize*9/2) + cellSize 
+      && mouseY > y*cellSize + 100 && mouseY < y*cellSize + 100 + cellSize && showAnswerGrid) {
+        text(`${answerGrid[y][x]}`,   x*cellSize + (width/2-cellSize*9/2) + cellSize/2,
+          y*cellSize + 100 + cellSize/2);
+      }
     }
   }
 }
-
 
 function generateSudoku() {
   let possibleNumbers;
@@ -75,33 +68,68 @@ function generateSudoku() {
   for (let y = 0; y < GRID_SIZE; y++){
     newGrid.push([]);
     for(let x = 0; x < GRID_SIZE; x++) {
-      possibleNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-      
+      // possibleNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+      possibleNumbers = checkViableNumbers(x, y, newGrid);
+
       newGrid[y].push(random(possibleNumbers));
     }
   }
   return newGrid;
 }
 
-function ChooseHints() {
-  //select what cells the player will be able to see
+function generateEmptyGrid() {
+  let newGrid = [];
+  for (let y = 0; y < GRID_SIZE; y++){
+    newGrid.push([]);
+    for(let x = 0; x < GRID_SIZE; x++) {
+      newGrid[y].push(0);
+    }
+  }
+  return newGrid;
 }
 
-function checkViableNumbers(currentX, currentY, numberCandidates, theGrid) {
-  let bannedNumbers = [];
+
+function ChooseHints() {
+  //hard = 17 hints
+  //medium = 21 hints
+  if (gamedifficulty === "medium") {
+    
+  }
+  //easy = 24 hints
+}
+
+function checkViableNumbers(currentX, currentY, theGrid) {
+  let viableNumbers = [];
   //use for generation (,,, also use for auto-candidate if i add that?)
+
+  //grid[0][0] // dont need to check anything
   if (currentX === 0 && currentY === 0) {
     //first one can be any so dont remove anything
-    return false;
-
+    return [1, 2, 3, 4, 5, 6, 7, 8 ,9 ];
   }
 
+  //grid[0][0-8] need to check everything to the left
   if (currentY === 0 && currentX !== 0) {
-    //anything in the first row so check all behind
+
+    //go backwards 1 untill less than zero
     for (let x = currentX-1; x < 0; x -= 1) {
-      numberCandidates[0][x] = 0;
+
+      //remove numbers that are already on the grid behind currentX
+      for (let number = 1; i < 9; i++) {
+        //if spot on the grid where currently looking is not-NVM need to have a bannedNumber list 
+        //then subtract that number list from the viable numbers.....
+
+
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!
+        if (theGrid[0][x] === number) {
+          viableNumbers.push(number);
+        }
+      }
     }
-    //needs to check row
+
+    //grid[0-8][0] // need to check all above, none to the left
     //check column
     //check box
     // return possible numbers
