@@ -2,8 +2,7 @@
 // Avery Walker
 // Oct 30th
 //
-// Extra for Experts:
-//what......
+// !!!changed 2-D grid project to 'lockSolver'
 
 let answerGrid;
 let playerGrid;
