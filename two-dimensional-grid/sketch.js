@@ -1,6 +1,6 @@
-// Project Title
-// Your Name
-// Date
+// Lock Solver  /// "wordle but with numbers"
+// Avery Waler 
+// October 11th
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -8,6 +8,8 @@
 let grid = [];
 let playerInput = [];
 let thePassword = [];
+let keySlot = 0; //replace this its not neccesary
+
 //x
 let passwordLength = 5;
 //y
@@ -22,17 +24,28 @@ function setup() {
   grid = generateEmptyGrid();
 }
 
+
+
 function draw() {
   background(60);
   if (gameState === "ongoing") {
     displayGrid();
     displayPlayerInput();
   }
+
+
+  //temporary
+  fill(250);
+  text(`keyslot:${keySlot}`, 50, 200)
 }
+
+
 
 function startScreen(){
   
 }
+
+
 
 function displayGrid() {
   for (let y = 0; y < amountOfGuesses; y++){
@@ -49,59 +62,72 @@ function displayGrid() {
   }
 }
 
+
+
 function keyPressed() {
   //keySlot is the 'x'
-  let keySlot = 0;
-  
-  if (keyCode === BACKSPACE && keySlot !== 0) {
+  // can probably replace keyslot by using playerInput.length? maybee... try later
+
+  //backspace
+  if (keyCode === BACKSPACE && keySlot !== 0) { //playerInput.length-1>0
     keySlot -= 1;
+    playerInput.pop();
   }
 
-  // playerInput
-  else if (keySlot < amountOfGuesses) {
-    // for (let i = 0; i < 9; i++) {
-    //   if (key === i) {
-    playerInput += `${key}`;
-    keySlot++;
-    return playerInput;
-    //   }
-    // }
+
+  //playerInput
+  else if (keySlot < amountOfGuesses-1) { //playerInput.length-1 < amountOfGuesses
+    for (let i = 1; i < 10; i++) {
+
+      //check if its a number between 1-9
+      if (Number(key) === i) {
+      playerInput.push([`${key}`]);
+      keySlot++;
+      }
+
+    }
   }
-  else if (keyCode === ENTER && keySlot === passwordLength) {
-    // for each cell replace grid with player input then clear player input
-    //!!!!!!!!!!!!!!! something is breaking here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  // clear the current player input and replace the next open row in the (main) grid
+  else if (keyCode === ENTER && keySlot === passwordLength) { //playerInput.length-1 === passwordLength
     playerInput = [];
     keySlot = 0;
   }
 }
+
+
 
 function displayPlayerInput() {
   //show whatever numbers you have typed untill you hit enter
   fill(255);
 
   for (let x = 0; x < passwordLength; x++) {
+    //always make the grid regardless of actual player input
     fill(255);
     rect(x*cellSize + width/2 - cellSize*passwordLength/2, cellSize*amountOfGuesses + cellSize*2.5, cellSize, cellSize);
 
-    if (playerInput > 0 && x < playerInput.length) {
+    //if there is actually something to display then display it
+    if (playerInput.length > 0 && x < playerInput.length) {
       text(`${playerInput[x]}`, 30+10*x, 30); 
       // text(`${playerInput[x]}`,x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2,
       //   y*cellSize + 100 + cellSize*amountOfGuesses + cellSize*2.5 + cellSize/2);  
     }
   }
 
-  if (playerInput > 0) {
-    for (let num = 0; num < passwordLength; num++){
 
-      if (num < playerInput.length){
-        text(`${playerInput[num]}`, 30+10*num, 30);  
-      }
-    }
+  //currently redundant 
+  // if (playerInput.length > 0) {
+  //   for (let num = 0; num < passwordLength; num++){
+
+  //     if (num < playerInput.length){
+  //       text(`${playerInput[num]}`, 30+10*num, 30);  
+  //     }
+  //   }
 
     // for (let num = 0; num < passwordLength; num++){
     //   text(`${thePassword[num]}`, 30+10*num, 60);
     // }
-  }
+  // }
 }
 
 function generatePassword() {

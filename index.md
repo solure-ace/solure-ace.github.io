@@ -20,3 +20,4 @@
 - [Interactive Scene](interactive-scene)
 - [Arrays and Object Notation](array-object)
 - [Sudoku](sudoku)
+- [Lock Solver](two-dimensional-grid)
