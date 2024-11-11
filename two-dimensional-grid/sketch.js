@@ -7,7 +7,7 @@
 
 let grid = [];
 let playerInput = [];
-let thePassword = [];
+let thePassword = [1, 2, 3, 4, 5];
 
 let keySlot = 0; //replace this its not neccesary
 let guessCounter = 0;
@@ -18,7 +18,7 @@ let passwordLength = 5;
 let amountOfGuesses = 6;
 
 let cellSize = 60;
-let gameState = "ongoing";
+let gameState = "start";
 
 
 function setup() {
@@ -30,8 +30,12 @@ function setup() {
 
 
 function draw() {
-  background(60);
+  if (gameState === "start") {
+    background(60);
+    startScreen();
+  }
   if (gameState === "ongoing") {
+    background(60);
     displayGrid();
     displayPlayerInputGrid();
     displayInput();
@@ -50,12 +54,23 @@ function startScreen(){
   
 }
 
+function mousePressed() {
+  if (gameState === "start") {
+    gameState = "ongoing";
+  }
+}
+
+
 
 
 function displayGrid() {
   for (let y = 0; y < amountOfGuesses; y++){
     for (let x = 0; x < passwordLength; x++) {
       fill(255);
+      if (grid[guessCounter][x] === 1) {
+        fill("green");
+      }
+
       // y ?? y*cellSize + height - cellSize*amountOfGuesses-cellSize*1.5
       rect(x*cellSize + width/2 - cellSize*passwordLength/2, y*cellSize +100, cellSize, cellSize);
 
@@ -113,17 +128,15 @@ function displayInput() {
       // text(`${playerInput[x]}`,x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2,
       //   y*cellSize + 100 + cellSize*amountOfGuesses + cellSize*2.5 + cellSize/2);  
     }
-    if (thePassword.length > 0 && x < thePassword.length) {
-      text(`${thePassword[x]}`, 30+10*x, 60); 
-      // text(`${playerInput[x]}`,x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2,
-      //   y*cellSize + 100 + cellSize*amountOfGuesses + cellSize*2.5 + cellSize/2);  
-    }
   }
 }
 
 
 
+
 function displayPlayerInputGrid() {
+  /// Work on this next ig
+  
   //show whatever numbers you have typed untill you hit enter
   fill(255);
   if (guessCounter >= amountOfGuesses) {
@@ -152,7 +165,8 @@ function displayPlayerInputGrid() {
 
 function generatePassword() {
   for( let i = 0; i < passwordLength; i++) {
-    thePassword.push([Math.floor(random(1, 9))]);
+    // thePassword.push([Math.floor(random(1, 9))]);
+    thePassword.push(0);
   }
 }
 
