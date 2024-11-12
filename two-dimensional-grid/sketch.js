@@ -8,7 +8,7 @@
 let grid = [];
 let playerInput = [];
 let thePassword = [1, 2, 3, 4, 5];
-
+// let thePassword = [];
 let keySlot = 0; //replace this its not neccesary
 let guessCounter = 0;
 
@@ -19,11 +19,13 @@ let amountOfGuesses = 6;
 
 let cellSize = 60;
 let gameState = "start";
+let lockOpened = false;
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   grid = generateEmptyGrid();
+  //work on fixing this next vvvv
   // thePassword = generatePassword();
 }
 
@@ -67,7 +69,7 @@ function displayGrid() {
   for (let y = 0; y < amountOfGuesses; y++){
     for (let x = 0; x < passwordLength; x++) {
       fill(255);
-      if (grid[guessCounter][x] === 1) {
+      if (Number(grid[y][x]) === Number(thePassword[x])) {
         fill("green");
       }
 
@@ -124,7 +126,13 @@ function displayInput() {
   
   for (let x = 0; x < passwordLength; x++) {
     if (playerInput.length > 0 && x < playerInput.length) {
-      text(`${playerInput[x]}`, 30+10*x, 30); 
+
+      fill(0);
+      textAlign(CENTER, CENTER);
+      text(`${playerInput[x]}`, x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2, cellSize*amountOfGuesses + cellSize*2.5 + cellSize/2);
+
+      //text(`${playerInput[x]}`, 30+10*x, 30);
+
       // text(`${playerInput[x]}`,x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2,
       //   y*cellSize + 100 + cellSize*amountOfGuesses + cellSize*2.5 + cellSize/2);  
     }
@@ -135,38 +143,20 @@ function displayInput() {
 
 
 function displayPlayerInputGrid() {
-  /// Work on this next ig
-  
   //show whatever numbers you have typed untill you hit enter
   fill(255);
   if (guessCounter >= amountOfGuesses) {
     fill(200, 100, 100);
   }
   for (let x = 0; x < passwordLength; x++) {
-    //always make the grid regardless of actual player input
     rect(x*cellSize + width/2 - cellSize*passwordLength/2, cellSize*amountOfGuesses + cellSize*2.5, cellSize, cellSize);
   }
-
-
-  //currently redundant 
-  // if (playerInput.length > 0) {
-  //   for (let num = 0; num < passwordLength; num++){
-
-  //     if (num < playerInput.length){
-  //       text(`${playerInput[num]}`, 30+10*num, 30);  
-  //     }
-  //   }
-
-  // for (let num = 0; num < passwordLength; num++){
-  //   text(`${thePassword[num]}`, 30+10*num, 60);
-  // }
-  // }
 }
 
 function generatePassword() {
   for( let i = 0; i < passwordLength; i++) {
     // thePassword.push([Math.floor(random(1, 9))]);
-    thePassword.push(0);
+    thePassword.push(Math.floor(random(1, 9)));
   }
 }
 
