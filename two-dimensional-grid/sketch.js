@@ -1,24 +1,24 @@
 // Lock Solver  /// "wordle but with numbers"
 // Avery Waler 
-// October 14th
+// October 15th
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// "\n" starts a new line of text. / textLeading
 
 
 //TO DO
 //generatePassword(){} [✔]
 //yellow/*wrong space* colour coding [✔]
-//win state // game over state [✔][ ]
-//reset game [ ]
-//add some sort of sound when enter is pressed && when win [ ]
+//win state // game over state [✔][!!!!!]
+//reset game [✔]
 
 
 let grid = [];
 let playerInput = [];
+
 // let thePassword = [1, 2, 3, 4, 5];
 let thePassword = [];
-let keySlot = 0; //replace this its not neccesary
+let keySlot = 0;
 let guessCounter = 0;
 
 //x
@@ -45,6 +45,7 @@ function draw() {
     background(60);
     startScreen();
   }
+
   if (gameState === "ongoing") {
     background(60);
     displayGrid();
@@ -53,25 +54,40 @@ function draw() {
 
     //i want it to keep displaying "ongoing" untill it resets so the lose/winstate is overtop of "ongoing"
     if (lockOpened) {
-      text('You Win!', width/2, 50);
+      fill(250);
+      textSize(20);
+      text('You Win! \n press "r" to reset', width/2, 70);
     }
   }
+  if (!lockOpened) {
+    fill(250);
+    textSize(20);
+    text('"LOCK SOLVER"', width/2, 50);
+  }
 
-
-  //temporary
-  fill(250);
-  textAlign(LEFT, TOP);
-  text(`keyslot:${keySlot}`, 60, 200);
-  text(`password:${thePassword}`, 60, 250);
-  
+  //** for testing 
+  // fill(250);
+  // textAlign(LEFT, TOP);
+  // textSize(12);
+  // text(`keyslot:${keySlot}`, 60, 200);
+  // text(`password:${thePassword}`, 60, 250);
 }
 
 
 
 function startScreen(){
   textAlign(CENTER, CENTER);
-  
-  text('Guess the lock combination to win \n \n GREEN: correct number in the correct spot \n YELLOW: number is in the combination, but in the wrong spot\n \n Click to Start', width/2, height/2-75);
+  textSize(20);
+  fill(255);
+  text('Guess the lock combination to win \n \n GREEN: correct number in the correct spot \n YELLOW: number is in the combination, but in the wrong spot \n press "r" to reset at anytime \n \n Click to Start ', width/2, height/2-75);
+}
+
+function resetGame() {
+  thePassword = generatePassword();
+  grid = generateEmptyGrid();
+  keySlot = 0;
+  guessCounter = 0;
+  lockOpened = false;
 }
 
 function mousePressed() {
@@ -81,10 +97,10 @@ function mousePressed() {
 }
 
 function checkifUnlocked() {
-
-  //check if win
+  //check if all of thePassword matches with all of playerInput within the same entry
   let slotsUnlocked = 0;
   for (let x = 0; x < passwordLength; x++) {
+    //meant to be called only after enter is pressed, which is why guessCounter-1 is used
     if (Number(grid[guessCounter-1][x]) === Number(thePassword[x])) {
       slotsUnlocked++;
     }
@@ -95,7 +111,12 @@ function checkifUnlocked() {
 
 
 function keyPressed() {
-  //keySlot is the 'x'
+  //keySlot is the 'x' in player input
+
+  //reset the password & grid
+  if (key === "r" && gameState !== "start") {
+    resetGame();
+  }
 
   if (!lockOpened && gameState === "ongoing") {
     //backspace
@@ -113,7 +134,6 @@ function keyPressed() {
           playerInput.push([`${key}`]);
           keySlot++;
         }
-
       }
     }
 
@@ -150,15 +170,20 @@ function displayGrid() {
           }
         }
       }
-
+      
+      //rect
       strokeWeight(5);
       stroke(60);
       rect(x*cellSize + width/2 - cellSize*passwordLength/2, y*cellSize +100, cellSize, cellSize);
 
+      //text
       noStroke();
+      textSize(12);
       textAlign(CENTER, CENTER);
       fill(0);
+
       if (grid[y][x] !== 0) {
+        textSize(12);
         text(`${grid[y][x]}`,x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2,
           y*cellSize +100 + cellSize/2);
       }
@@ -169,33 +194,32 @@ function displayGrid() {
 
 
 function displayInput() {
-  //if there is actually something to display then display it
+  //display numbers between 1-9 that have been typed up to passwordLength
   
   for (let x = 0; x < passwordLength; x++) {
     if (playerInput.length > 0 && x < playerInput.length && !lockOpened) {
-
       fill(0);
       noStroke();
       textAlign(CENTER, CENTER);
+      textSize(12);
       text(`${playerInput[x]}`, x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2, cellSize*amountOfGuesses + cellSize*2.5 + cellSize/2);
-
-      //text(`${playerInput[x]}`, 30+10*x, 30);
-
-      // text(`${playerInput[x]}`,x*cellSize + width/2 - cellSize*passwordLength/2 + cellSize/2,
-      //   y*cellSize + 100 + cellSize*amountOfGuesses + cellSize*2.5 + cellSize/2);  
     }
   }
 }
 
 function displayPlayerInputGrid() {
-  //show whatever numbers you have typed untill you hit enter
+  //displays the lower grid/bar that holds the player input as it is typed
   fill(255);
+  //bar changes to red in lose state
   if (guessCounter >= amountOfGuesses && !lockOpened) {
     fill(230, 50, 50);
   }
+
+  //bar changes to green when lockOpened
   else if (lockOpened){
     fill(20, 150, 60);
   }
+
   for (let x = 0; x < passwordLength; x++) {
     strokeWeight(5);
     stroke(60);
@@ -205,8 +229,8 @@ function displayPlayerInputGrid() {
 
 
 
-
 function generatePassword() {
+  //generate a random password when called
   let newPassword = [];
   for( let i = 0; i < passwordLength; i++) {
     newPassword.push(Math.floor(random(1, 9)));
@@ -215,6 +239,7 @@ function generatePassword() {
 }
 
 function generateEmptyGrid(){
+  //generate a grid full of 0s in passwordLength(x) and amountOfGuesses(y) // 0s arent displayed in text
   let theGrid = [];
   for (let y = 0; y < amountOfGuesses; y++) {
     theGrid.push([]);
