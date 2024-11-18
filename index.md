@@ -16,6 +16,7 @@
 - [rectangle Grid](rect-grid)
 - [Character in Grid](character-in-grid)
 - [Walker OOP](walker-oop)
+- [fireworks OOP](fireworks-oop)
 
 ## Projects
 - [Interactive Scene](interactive-scene)
