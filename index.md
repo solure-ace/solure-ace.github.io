@@ -19,6 +19,8 @@
 - [fireworks OOP](fireworks-oop)
 - [connected nodes OOP](nodes)
 - [collide 2d demo](collide)
+- [fractal circles](fractal-circle)
+- [sierpinski triangle](sierpinki-triangle)
 
 ## Projects
 - [Interactive Scene](interactive-scene)
